@@ -6,10 +6,11 @@
 void menuInit(MenuContext* menu, SDL_Renderer* renderer) {
     menu->selectedItem = 0;
     menu->itemCount = 4;
-    
-    // Načtení assetů
-    menu->logoTexture = IMG_LoadTexture(renderer, "../assets/images/logo.png");
-    menu->arrowTexture = IMG_LoadTexture(renderer, "../assets/images/arrow.png");
+
+    menu->logo = spriteInit(renderer, "../assets/images/logo.png", NULL, NULL, NULL);
+    menu->logo.destination.x = WINDOW_WIDTH/2 - menu->logo.destination.w/2; 
+    menu->logo.destination.y = 50;
+    menu->arrow = spriteInit(renderer, "../assets/images/arrow.png", NULL, NULL, NULL);
     menu->font = TTF_OpenFont("../assets/space_invaders.ttf", 20);
 
     char* labels[] = {"START GAME", "GUIDE", "LEADERBOARD", "QUIT"};
@@ -17,44 +18,25 @@ void menuInit(MenuContext* menu, SDL_Renderer* renderer) {
     int spacing = 60;
 
     for (int i = 0; i < menu->itemCount; i++) {
-        menu->items[i].texture = MakeTextTexture(labels[i], menu->font, renderer);
+        menu->items[i] = spriteInit(renderer, NULL, labels[i], menu->font, NULL);
         
-        int textW, textH;
-        SDL_QueryTexture(menu->items[i].texture, NULL, NULL, &textW, &textH);
-        
-        menu->items[i].rect.x = (WINDOW_WIDTH - textW ) / 2;
-        menu->items[i].rect.y = startY + (i * spacing);
-        menu->items[i].rect.w = textW;
-        menu->items[i].rect.h = textH;
+        menu->items[i].destination.x = (WINDOW_WIDTH -  menu->items[i].destination.w ) / 2;
+        menu->items[i].destination.y = startY + (i * spacing);
     }
 }
 
-void menuRender(SDL_Context context, MenuContext* menu)
+void menuRender(SDL_Renderer* renderer, MenuContext* menu)
 {
-    int logoW = 250;
-    int logoH = 200;
-    SDL_Rect rect = {
-        .x = (WINDOW_WIDTH - logoW) / 2, 
-        .y = 50, 
-        .w = logoW,
-        .h = logoH
-    };
-    SDL_RenderCopy(context.renderer, menu->logoTexture, NULL, &rect);
+    drawSprite(renderer, &menu->logo);
     for (int i = 0; i < menu->itemCount; i++) 
     {
-        SDL_RenderCopy(context.renderer, menu->items[i].texture, NULL, &menu->items[i].rect);
+        drawSprite(renderer, &menu->items[i]);
     }
-    SDL_Rect targetRect = menu->items[menu->selectedItem].rect; 
-    int rocketW = 30;
-    int rocketH = 17;
+    SDL_Rect targetRect = menu->items[menu->selectedItem].destination; 
     int padding = 20; 
-    SDL_Rect rocketRect = {
-                .x = targetRect.x - rocketW - padding,
-                .y = targetRect.y + (targetRect.h - rocketH) / 2 - 5,
-                .w = rocketW,
-                .h = rocketH
-                };
-    SDL_RenderCopy(context.renderer, menu->arrowTexture, NULL, &rocketRect);
+    menu->arrow.destination.x =  targetRect.x -  menu->arrow.destination.w - padding;
+    menu->arrow.destination.y =  targetRect.y + (targetRect.h -  menu->arrow.destination.h) / 2 - 5;
+    drawSprite(renderer, &menu->arrow);
 }
 
 GameState menuHandleInput(MenuContext* menu, SDL_Event event)
@@ -62,13 +44,11 @@ GameState menuHandleInput(MenuContext* menu, SDL_Event event)
     switch (event.key.keysym.sym) {
             case SDLK_UP:
                 menu->selectedItem--;
-                if (menu->selectedItem < 0) menu->selectedItem = menu->itemCount - 1;
-                return STATE_MENU;
+                if (menu->selectedItem < 0) menu->selectedItem = menu->itemCount - 1; 
                 break;
             case SDLK_DOWN:
                 menu->selectedItem++;
                 if (menu->selectedItem >= menu->itemCount) menu->selectedItem = 0;
-                return STATE_MENU;
                 break;
             case SDLK_RETURN: //ENTER   
             case SDLK_SPACE:
@@ -78,12 +58,13 @@ GameState menuHandleInput(MenuContext* menu, SDL_Event event)
                 if (menu->selectedItem == 3) return STATE_QUIT;
                 break;
         }
+    return STATE_MENU;
 }
 
 void menuCleanup(MenuContext* menu)
 {
-    SDL_DestroyTexture(menu->logoTexture);
-    SDL_DestroyTexture(menu->arrowTexture);
+    SDL_DestroyTexture(menu->logo.texture);
+    SDL_DestroyTexture(menu->arrow.texture);
     for (int i = 0; i < menu->itemCount; i++) {
         SDL_DestroyTexture(menu->items[i].texture);
     }

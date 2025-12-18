@@ -16,7 +16,6 @@ int main()
     menuInit(&menuContext, context.renderer);
     GameState currentState = STATE_MENU;
     
-    
     SDL_Event event;
     int running = 1;
     Uint64 last = SDL_GetPerformanceCounter();
@@ -24,7 +23,7 @@ int main()
     {
         Uint64 now = SDL_GetPerformanceCounter();
         double deltaTime = (double)(now - last) / (double)((long long)SDL_GetPerformanceFrequency());
-
+        //akce
         while (SDL_PollEvent(&event))
         {
             if(event.type == SDL_QUIT)
@@ -52,7 +51,7 @@ int main()
         switch (currentState)
         {
             case STATE_MENU:
-               menuRender(context, &menuContext);
+               menuRender(context.renderer, &menuContext);
             break;
             case STATE_QUIT:
                 running = 0;
@@ -65,6 +64,7 @@ int main()
         SDL_RenderPresent(context.renderer);
         last = now;
     }
+    //uklid
     menuCleanup(&menuContext);
     sdl_context_free(&context);
     return 0;

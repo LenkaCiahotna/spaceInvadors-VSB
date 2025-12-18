@@ -4,22 +4,18 @@
 #include <SDL2/SDL_ttf.h>
 #include "defs.h"
 #include "sdl.h"
-
-typedef struct{
-    SDL_Texture* texture;
-    SDL_Rect rect; 
-} MenuItem;
+#include "sprites.h"
 
 typedef struct {
-    SDL_Texture* logoTexture;
-    SDL_Texture* arrowTexture;
+    Sprite logo;
+    Sprite arrow;
+    Sprite items[4];
     TTF_Font* font;
-    MenuItem items[4];
     int itemCount;
     int selectedItem;
 } MenuContext;
 
 void menuInit(MenuContext* menu, SDL_Renderer* renderer);
 GameState menuHandleInput(MenuContext* menu, SDL_Event event);
-void menuRender(SDL_Context context, MenuContext* menu);
+void menuRender(SDL_Renderer* renderer, MenuContext* menu);
 void menuCleanup(MenuContext* menu);
