@@ -40,3 +40,14 @@ void drawSprite(SDL_Renderer* renderer, Sprite* sprite)
     //&((*sprite).source) == &sprite->source
     SDL_RenderCopy(renderer, sprite->texture, &sprite->source, &sprite->destination);
 }
+
+void makeTextSpriteArray(Sprite* items, SDL_Renderer* renderer, char* labels[], int itemCount, TTF_Font* font, int startY, int spacing)
+{
+    for (int i = 0; i < itemCount; i++) 
+    {
+        items[i] = spriteInit(renderer, NULL, labels[i], font, NULL);
+        
+        items[i].destination.x = (WINDOW_WIDTH - items[i].destination.w ) / 2;
+        items[i].destination.y = startY + (i * spacing);
+    }
+}

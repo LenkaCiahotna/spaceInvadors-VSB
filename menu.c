@@ -3,26 +3,22 @@
 #include "utils.h"
 #include "sdl.h"
 
-void menuInit(MenuContext* menu, SDL_Renderer* renderer) {
-    menu->selectedItem = 0;
-    menu->itemCount = 4;
-
-    menu->logo = spriteInit(renderer, "../assets/images/logo.png", NULL, NULL, NULL);
-    menu->logo.destination.x = WINDOW_WIDTH/2 - menu->logo.destination.w/2; 
-    menu->logo.destination.y = 50;
-    menu->arrow = spriteInit(renderer, "../assets/images/arrow.png", NULL, NULL, NULL);
-    menu->font = TTF_OpenFont("../assets/space_invaders.ttf", 20);
+MenuContext menuInit(SDL_Renderer* renderer, TTF_Font* font)
+{
+    MenuContext menu;
+    menu.selectedItem = 0;
+   
+    menu.logo = spriteInit(renderer, "../assets/images/logo.png", NULL, NULL, NULL);
+    menu.logo.destination.x = WINDOW_WIDTH/2 - menu.logo.destination.w/2; 
+    menu.logo.destination.y = 50;
+    menu.arrow = spriteInit(renderer, "../assets/images/arrow.png", NULL, NULL, NULL);
+    menu.font = font;
 
     char* labels[] = {"START GAME", "GUIDE", "LEADERBOARD", "QUIT"};
-    int startY = 330;
-    int spacing = 60;
+    menu.itemCount = 4;
 
-    for (int i = 0; i < menu->itemCount; i++) {
-        menu->items[i] = spriteInit(renderer, NULL, labels[i], menu->font, NULL);
-        
-        menu->items[i].destination.x = (WINDOW_WIDTH -  menu->items[i].destination.w ) / 2;
-        menu->items[i].destination.y = startY + (i * spacing);
-    }
+    makeTextSpriteArray(menu.items, renderer, labels, menu.itemCount, menu.font,330,60);
+    return menu;
 }
 
 void menuRender(SDL_Renderer* renderer, MenuContext* menu)

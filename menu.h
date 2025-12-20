@@ -15,7 +15,7 @@ typedef struct {
     int selectedItem;
 } MenuContext;
 
-void menuInit(MenuContext* menu, SDL_Renderer* renderer);
+MenuContext menuInit(SDL_Renderer* renderer, TTF_Font* font);
 GameState menuHandleInput(MenuContext* menu, SDL_Event event);
 void menuRender(SDL_Renderer* renderer, MenuContext* menu);
 void menuCleanup(MenuContext* menu);

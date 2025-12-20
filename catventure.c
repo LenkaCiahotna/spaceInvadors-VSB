@@ -6,14 +6,23 @@
 #include "sdl.h"
 #include "utils.h"
 #include "menu.h"
+#include "guide.h"
+
 
 int main()
 {
     srand((unsigned int)time(NULL));
 
     SDL_Context context = sdl_context_init("Space Invadors", WINDOW_WIDTH, WINDOW_HEIGHT);
-    MenuContext menuContext;
-    menuInit(&menuContext, context.renderer);
+    TTF_Font* font = TTF_OpenFont("../assets/space_invaders.ttf", 20);
+    if (font == NULL) 
+    {
+        printf("CHYBA: Nepodarilo se nacist font!");
+        return 1;
+    }
+    MenuContext menuContext =  menuInit(context.renderer, font);
+    GuideContext guideContext = guideInit(context.renderer, font);
+   
     GameState currentState = STATE_MENU;
     
     SDL_Event event;
@@ -32,11 +41,19 @@ int main()
             }
             if (event.type == SDL_KEYDOWN) 
             {
+                //zde M pro mute music?
                 switch (currentState)
                 {
                     case STATE_MENU:
                         currentState = menuHandleInput(&menuContext, event);
                             break;
+                    case STATE_GUIDE:
+                        if (event.key.keysym.sym == SDLK_SPACE)
+                        {
+                            currentState = STATE_MENU;
+                        }
+                        
+                        break;
                     default:
                     break;
                 }
@@ -51,8 +68,11 @@ int main()
         switch (currentState)
         {
             case STATE_MENU:
-               menuRender(context.renderer, &menuContext);
+                menuRender(context.renderer, &menuContext);
             break;
+            case STATE_GUIDE:
+                guideRender(context.renderer, &guideContext);
+                break;
             case STATE_QUIT:
                 running = 0;
             break;
@@ -66,6 +86,7 @@ int main()
     }
     //uklid
     menuCleanup(&menuContext);
+    guideCleanup(&guideContext);
     sdl_context_free(&context);
     return 0;
 }

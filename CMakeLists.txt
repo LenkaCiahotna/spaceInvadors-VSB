@@ -11,7 +11,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
 # Vytvoření spustitelného souboru
-add_executable(catventure  catventure.c dynamic_array.c sdl.c defs.h menu.c utils.c sprites.c)
+add_executable(catventure  catventure.c dynamic_array.c sdl.c defs.h sprites.c menu.c utils.c  guide.c)
 
 # Include directories pro SDL2 i SDL2_image
 target_include_directories(catventure PRIVATE

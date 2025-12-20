@@ -12,3 +12,4 @@ typedef struct{
 
 Sprite spriteInit(SDL_Renderer* renderer, char* path, char* text, TTF_Font* font, SDL_Rect* source);
 void drawSprite(SDL_Renderer* renderer, Sprite* sprite);
+void makeTextSpriteArray(Sprite* items, SDL_Renderer* renderer, char* labels[], int itemCount, TTF_Font* font, int startY, int spacing);
