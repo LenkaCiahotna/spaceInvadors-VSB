@@ -7,6 +7,9 @@
 
 typedef struct 
 {
-   Sprite sprite;
-   EntityState state;
+    Sprite sprite;
+    float posXf; // skutecna pozice (des. cislo)
+    float posYf;
+    EntityState state;
+    int speed;
 }Entity;

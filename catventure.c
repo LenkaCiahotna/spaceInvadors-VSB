@@ -30,8 +30,9 @@ int main()
     }
     MenuContext menuContext =  menuInit(context.renderer, font);
     GuideContext guideContext = guideInit(context.renderer, font);
+    
     GameContext gameContext = gameContextInit(context.renderer, spriteSheet, font);
-   
+
     GameState currentState = STATE_MENU;
 
    
@@ -55,18 +56,36 @@ int main()
                 switch (currentState)
                 {
                     case STATE_MENU:
-                        currentState = menuHandleInput(&menuContext, event);
-                            break;
+                        GameState nextState = menuHandleInput(&menuContext, event);
+                        if (nextState == STATE_GAME) 
+                        {
+                            gameContext = gameContextInit(context.renderer, spriteSheet, font);
+                        }
+                    currentState = nextState;
+                    break;
                     case STATE_GUIDE:
                         if (event.key.keysym.sym == SDLK_SPACE)
                         {
                             currentState = STATE_MENU;
                         }   
                         break;
+                    case STATE_GAME:
+                        if (event.key.keysym.sym == SDLK_ESCAPE)
+                        {
+                            currentState = STATE_MENU;
+                        }
+                        break;
                     default:
                     break;
                 }
             }
+        }
+
+        //update hry 
+        if (currentState == STATE_GAME) 
+        {
+            // potrebuji plynuly pohyb
+            updatePlayer(&gameContext.game.player, deltaTime);
         }
 
         //nabarvi pozadi

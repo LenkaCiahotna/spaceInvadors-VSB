@@ -9,7 +9,6 @@ typedef struct
 {
    Entity base;
    int score;
-   int speed;
 }Enemy;
 
 Enemy enemyInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Point* source, int score,int speed);

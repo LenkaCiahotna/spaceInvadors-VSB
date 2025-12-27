@@ -12,3 +12,4 @@ typedef struct
 }Player;
 
 Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet);
+void updatePlayer(Player* player, double deltaTime);

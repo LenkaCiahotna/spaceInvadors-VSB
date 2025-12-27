@@ -19,6 +19,6 @@ Enemy enemyInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Point* source, i
     enemy.base.sprite = spriteInit(renderer, sheet, NULL,NULL, &rect);
     enemy.score = score;
     enemy.base.state = ENTITY_ANIM1;
-    enemy.speed = speed;
+    enemy.base.speed = speed;
     return enemy;
 }

@@ -34,7 +34,7 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet)
 
         game.enemies[i].base.sprite.destination.x = 20 + (col * (ENTITY_SIZE + 10));
         game.enemies[i].base.sprite.destination.y = 50 + (row * ENTITY_SIZE);
-        game.enemies[i].speed = 10;
+        game.enemies[i].base.speed = 10;
         game.enemies[i].score = (5 - row) * 10; //od 50 do 10
     }
 

@@ -19,7 +19,40 @@ Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet)
     player.base.sprite = spriteInit(renderer, sheet, NULL,NULL, &rect);
     player.base.sprite.destination.x = WINDOW_WIDTH/2 + player.base.sprite.destination.w/2 ;
     player.base.sprite.destination.y = WINDOW_HEIGHT - 100;
+    player.base.posXf =  player.base.sprite.destination.x;
+    player.base.posYf =  player.base.sprite.destination.y;
+    player.base.speed = 200;
     player.lives = 3;
     player.base.state = ENTITY_ANIM1;
     return player;
+}
+
+void updatePlayer(Player* player, double deltaTime) 
+{
+    const Uint8* state = SDL_GetKeyboardState(NULL); //dokud je klavesa dole, hrac se pohybuje
+
+    // doleva
+    if (state[SDL_SCANCODE_LEFT])
+    {
+        printf("DOLEVAAAA\n : %f", player->base.speed * deltaTime);
+        player->base.posXf -= player->base.speed * deltaTime;
+    }
+    // doprava
+    if (state[SDL_SCANCODE_RIGHT]) 
+    {
+        printf("DOPRAVAAAAA\n : %f", player->base.speed * deltaTime);
+        player->base.posXf += player->base.speed * deltaTime;
+    }
+
+    //kontrola konce obrazovky
+    if (player->base.posXf < 0) 
+    {
+        player->base.posXf = 0;
+    }
+    else if (player->base.posXf > WINDOW_WIDTH - player->base.sprite.destination.w) 
+    {
+        player->base.posXf = WINDOW_WIDTH - player->base.sprite.destination.w;
+    }
+
+    player->base.sprite.destination.x = (int)player->base.posXf;
 }
