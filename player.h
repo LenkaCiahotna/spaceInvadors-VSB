@@ -9,6 +9,7 @@ typedef struct
 {
    Entity base;
    int lives;
+   float shootCooldown;
 }Player;
 
 Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet);

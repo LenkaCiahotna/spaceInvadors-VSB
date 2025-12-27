@@ -10,6 +10,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "game.h"
+#include "bullet.h"
 
 int main()
 {
@@ -31,8 +32,8 @@ int main()
     MenuContext menuContext =  menuInit(context.renderer, font);
     GuideContext guideContext = guideInit(context.renderer, font);
     
-    GameContext gameContext = gameContextInit(context.renderer, spriteSheet, font);
-
+   
+    GameContext gameContext;
     GameState currentState = STATE_MENU;
 
    
@@ -74,6 +75,10 @@ int main()
                         {
                             currentState = STATE_MENU;
                         }
+                        if (event.key.keysym.sym == SDLK_SPACE)
+                        {
+                            playerShoot(&gameContext.game);
+                        }
                         break;
                     default:
                     break;
@@ -86,6 +91,7 @@ int main()
         {
             // potrebuji plynuly pohyb
             updatePlayer(&gameContext.game.player, deltaTime);
+            updateBullets(gameContext.game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
         }
 
         //nabarvi pozadi
@@ -103,7 +109,7 @@ int main()
                 break;
             case STATE_GAME:
                 //POKKUS
-                    renderGame(context.renderer, &gameContext);
+                renderGame(context.renderer, &gameContext);
                 break;
             case STATE_QUIT:
                 running = 0;

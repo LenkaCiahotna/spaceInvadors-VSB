@@ -24,13 +24,14 @@ Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet)
     player.base.speed = 200;
     player.lives = 3;
     player.base.state = ENTITY_ANIM1;
+    player.shootCooldown = 0.0f;
     return player;
 }
 
 void updatePlayer(Player* player, double deltaTime) 
 {
     const Uint8* state = SDL_GetKeyboardState(NULL); //dokud je klavesa dole, hrac se pohybuje
-
+    
     // doleva
     if (state[SDL_SCANCODE_LEFT])
     {
@@ -55,4 +56,9 @@ void updatePlayer(Player* player, double deltaTime)
     }
 
     player->base.sprite.destination.x = (int)player->base.posXf;
+
+    if (player->shootCooldown > 0)
+    {
+        player->shootCooldown -= deltaTime;
+    }
 }

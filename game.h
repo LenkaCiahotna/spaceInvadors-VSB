@@ -5,14 +5,17 @@
 #include "defs.h"
 #include "player.h"
 #include "enemy.h"
+#include "bullet.h"
 
 typedef struct 
 {
-   Player player;
-   Enemy enemies[ENEMY_COUNT];
-   int enemyDirection; // 1 = doprava, -1 = doleva
-   bool isRunning;
-   int score;
+    Player player;
+    Bullet playerBullets[MAX_PLAYER_BULLETS];
+    Enemy enemies[ENEMY_COUNT];
+    Bullet enemyBullets[MAX_PLAYER_BULLETS];
+    int enemyDirection; // 1 = doprava, -1 = doleva
+    bool isRunning;
+    int score;
 }Game;
 
 typedef struct 
@@ -25,4 +28,6 @@ typedef struct
 
 Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet);
 GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font);
+void playerShoot(Game *game);
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
+

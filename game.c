@@ -8,6 +8,17 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet)
     memset(&game, 0, sizeof(Game));
 
     game.player =  playerInit(renderer, sheet);
+    SDL_Rect Bulletrect = {
+        .x = 13,
+        .y = 2 * ENTITY_SIZE,
+        .w = 5,
+        .h = 20
+    };
+
+    for (int i = 0; i < MAX_PLAYER_BULLETS; i++) 
+    {
+        game.playerBullets[i] = bulletInit(renderer, sheet, Bulletrect);
+    }   
     game.enemyDirection = 1; // = zacinaji se hybat doprava
     game.isRunning = true;
 
@@ -87,11 +98,51 @@ GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font
     return gameContext;
 }
 
+void playerShoot(Game *game)
+{
+    if (game->player.shootCooldown > 0) 
+    {
+        return; 
+    }
+    float playerCenter = game->player.base.posXf + (game->player.base.sprite.destination.w / 2.0f);
+    float bulletHalf = game->playerBullets[0].base.sprite.destination.w / 2.0f;
+            
+    for (int i = 0; i < MAX_PLAYER_BULLETS; i++)
+    {
+        if (!game->playerBullets[i].active)
+        {
+            game->playerBullets[i].active = true;
+            // centrovani strely na stred lodi
+            game->playerBullets[i].base.posXf = playerCenter - bulletHalf;
+            
+            game->playerBullets[i].base.posYf = game->player.base.posYf;
+
+            game->playerBullets[i].base.sprite.destination.x = (int)game->playerBullets[i].base.posXf;
+            game->playerBullets[i].base.sprite.destination.y = (int)game->playerBullets[i].base.posYf;
+            game->player.shootCooldown =  PLAYER_SHOOT_COOLDOWN;
+            
+            //strela nalezena, vyskocime z cyklu
+            break; 
+        }
+    }
+    printf("VYSTReEEEEL\n");
+}
+
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
 {
     //hrac
     drawSprite(renderer, &gameConx->game.player.base.sprite); //&((*sprite).source) == &sprite->source
 
+    //hrac vystrely
+    for (int i = 0; i < MAX_PLAYER_BULLETS; i++)
+    {
+       if (&gameConx->game.playerBullets[i].active)
+       {
+            drawSprite(renderer, &gameConx->game.playerBullets[i].base.sprite);
+       }
+       
+    }
+    
     //enemies
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
@@ -109,7 +160,4 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
     {
          drawSprite(renderer, &gameConx->lifeIcons[i]);
     }
-    
-    
-
 }

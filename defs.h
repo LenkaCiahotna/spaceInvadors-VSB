@@ -8,6 +8,10 @@
 #define ENEMY_ROWS 5
 #define ENEMY_COLS 11
 #define ENEMY_COUNT (ENEMY_ROWS * ENEMY_COLS)
+#define MAX_PLAYER_BULLETS 10
+#define MAX_ENEMY_BULLETS 20
+#define BULLET_HEIGHT 20
+#define PLAYER_SHOOT_COOLDOWN 0.5f
 
 typedef enum {
     STATE_MENU,   
