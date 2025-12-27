@@ -10,7 +10,6 @@ typedef struct {
     Sprite logo;
     Sprite arrow;
     Sprite items[4];
-    TTF_Font* font;
     int itemCount;
     int selectedItem;
 } MenuContext;

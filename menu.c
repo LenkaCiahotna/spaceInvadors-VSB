@@ -8,16 +8,17 @@ MenuContext menuInit(SDL_Renderer* renderer, TTF_Font* font)
     MenuContext menu;
     menu.selectedItem = 0;
    
-    menu.logo = spriteInit(renderer, "../assets/images/logo.png", NULL, NULL, NULL);
+    SDL_Texture* logo = IMG_LoadTexture(renderer, "../assets/images/logo.png");
+    menu.logo = spriteInit(renderer, logo, NULL, NULL, NULL);
     menu.logo.destination.x = WINDOW_WIDTH/2 - menu.logo.destination.w/2; 
     menu.logo.destination.y = 50;
-    menu.arrow = spriteInit(renderer, "../assets/images/arrow.png", NULL, NULL, NULL);
-    menu.font = font;
+    SDL_Texture* arrow = IMG_LoadTexture(renderer, "../assets/images/arrow.png");
+    menu.arrow = spriteInit(renderer,arrow, NULL, NULL, NULL);
 
     char* labels[] = {"START GAME", "GUIDE", "LEADERBOARD", "QUIT"};
     menu.itemCount = 4;
 
-    makeTextSpriteArray(menu.items, renderer, labels, menu.itemCount, menu.font,330,60);
+    makeTextSpriteArray(menu.items, renderer, labels, menu.itemCount, font,330,60);
     return menu;
 }
 
@@ -33,6 +34,14 @@ void menuRender(SDL_Renderer* renderer, MenuContext* menu)
     menu->arrow.destination.x =  targetRect.x -  menu->arrow.destination.w - padding;
     menu->arrow.destination.y =  targetRect.y + (targetRect.h -  menu->arrow.destination.h) / 2 - 5;
     drawSprite(renderer, &menu->arrow);
+
+    /*
+    Sprite pokus;
+    pokus = spriteInit(renderer, "../assets/sprites/pokus.png", NULL,NULL,NULL);
+    pokus.destination.x =200;
+    pokus.destination.y = 200;
+    drawSprite(renderer, &pokus);
+    */
 }
 
 GameState menuHandleInput(MenuContext* menu, SDL_Event event)
@@ -60,9 +69,13 @@ GameState menuHandleInput(MenuContext* menu, SDL_Event event)
 void menuCleanup(MenuContext* menu)
 {
     SDL_DestroyTexture(menu->logo.texture);
+    menu->logo.texture = NULL;
     SDL_DestroyTexture(menu->arrow.texture);
-    for (int i = 0; i < menu->itemCount; i++) {
+     menu->arrow.texture = NULL;
+    for (int i = 0; i < menu->itemCount; i++) 
+    {
         SDL_DestroyTexture(menu->items[i].texture);
+        menu->items[i].texture = NULL;
     }
-    TTF_CloseFont(menu->font);
+
 }

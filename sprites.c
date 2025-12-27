@@ -4,7 +4,7 @@
 #include "sdl.h"
 #include "sprites.h"
 
-Sprite spriteInit(SDL_Renderer* renderer, char* path, char* text, TTF_Font* font, SDL_Rect* source)
+Sprite spriteInit(SDL_Renderer* renderer, SDL_Texture* texture, char* text, TTF_Font* font, SDL_Rect* source)
 {
     Sprite s = {NULL, {0,0,0,0}, {0,0,0,0}};
     if(text != NULL && font != NULL)
@@ -14,10 +14,11 @@ Sprite spriteInit(SDL_Renderer* renderer, char* path, char* text, TTF_Font* font
         s.source = (SDL_Rect){0, 0, surface->w, surface->h};
         s.destination = (SDL_Rect){0, 0, surface->w, surface->h};
         SDL_FreeSurface(surface);
+        surface = NULL;
     }
-    else if (path != NULL)
+    else if (texture != NULL)
     {
-        s.texture = IMG_LoadTexture(renderer, path);
+        s.texture = texture;
         int w, h;
         SDL_QueryTexture(s.texture, NULL, NULL, &w, &h);
         

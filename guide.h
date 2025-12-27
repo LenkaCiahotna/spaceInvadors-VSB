@@ -8,7 +8,6 @@
 
 typedef struct {
     Sprite items[10]; 
-    TTF_Font* font;
     int itemsCount;  
     Sprite backMessage;
 } GuideContext;

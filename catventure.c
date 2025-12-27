@@ -7,7 +7,9 @@
 #include "utils.h"
 #include "menu.h"
 #include "guide.h"
-
+#include "player.h"
+#include "enemy.h"
+#include "game.h"
 
 int main()
 {
@@ -20,11 +22,19 @@ int main()
         printf("CHYBA: Nepodarilo se nacist font!");
         return 1;
     }
+    SDL_Texture* spriteSheet = IMG_LoadTexture(context.renderer, "../assets/spritesheet.png");
+     if (spriteSheet == NULL) 
+    {
+        printf("CHYBA: Nepodarilo se nacist font!");
+        return 1;
+    }
     MenuContext menuContext =  menuInit(context.renderer, font);
     GuideContext guideContext = guideInit(context.renderer, font);
+    GameContext gameContext = gameContextInit(context.renderer, spriteSheet, font);
    
     GameState currentState = STATE_MENU;
-    
+
+   
     SDL_Event event;
     int running = 1;
     Uint64 last = SDL_GetPerformanceCounter();
@@ -51,8 +61,7 @@ int main()
                         if (event.key.keysym.sym == SDLK_SPACE)
                         {
                             currentState = STATE_MENU;
-                        }
-                        
+                        }   
                         break;
                     default:
                     break;
@@ -71,7 +80,11 @@ int main()
                 menuRender(context.renderer, &menuContext);
             break;
             case STATE_GUIDE:
-                guideRender(context.renderer, &guideContext);
+               guideRender(context.renderer, &guideContext);
+                break;
+            case STATE_GAME:
+                //POKKUS
+                    renderGame(context.renderer, &gameContext);
                 break;
             case STATE_QUIT:
                 running = 0;
@@ -87,6 +100,7 @@ int main()
     //uklid
     menuCleanup(&menuContext);
     guideCleanup(&guideContext);
+    TTF_CloseFont(font);
     sdl_context_free(&context);
     return 0;
 }
