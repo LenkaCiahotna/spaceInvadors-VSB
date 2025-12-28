@@ -59,7 +59,7 @@ GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font
 
     gameContext.game = gameInit(renderer, sheet);
 
-    char* labels[3] = {"Score", "0", "Lives"};
+    char* labels[3] = {"Score", "0000", "Lives"};
     gameContext.itemCount = 3;
 
     for (int i = 0; i < gameContext.itemCount; i++) 
@@ -72,7 +72,7 @@ GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font
     gameContext.items[0].destination.y = 10;
 
     //SCORE cisla
-    gameContext.items[1].destination.x = 10 + gameContext.items[0].destination.w + gameContext.items[1].destination.w ;
+    gameContext.items[1].destination.x = 10 + gameContext.items[0].destination.w + 10 ;
     gameContext.items[1].destination.y = 10 ;
 
     //LIVES
@@ -94,6 +94,7 @@ GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font
         gameContext.lifeIcons[i].destination.y =  WINDOW_HEIGHT - 10 -gameContext.items[2].destination.h;
     }
     
+    gameContext.lastRenderedScore = -1;
 
     return gameContext;
 }
@@ -142,6 +143,7 @@ void handle_collisions_enemies(Game* game)
                     {
                         game->playerBullets[i].active = false;
                         game->enemies[y].base.state = ENTITY_EXPLODING;
+                        game->score +=  game->enemies[y].score;
 
                         printf("BUM!\n");
                         break; 
@@ -151,6 +153,19 @@ void handle_collisions_enemies(Game* game)
                 
         }
 
+    }
+}
+
+void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font)
+{
+   if (context->game.score != context->lastRenderedScore)
+    {
+        SDL_DestroyTexture(context->items[1].texture);
+        char scoreText[10]; 
+        sprintf(scoreText, "%04d", context->game.score);
+        context->items[1] = spriteInit(renderer,NULL, scoreText, font, NULL);
+        context->items[1].destination.x = 10 + context->items[0].destination.w + 10;
+        context->items[1].destination.y = 10 ;
     }
 }
 
@@ -173,7 +188,11 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
     //enemies
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
-        drawSprite(renderer, &gameConx->game.enemies[i].base.sprite);
+        if (gameConx->game.enemies[i].base.state != ENTITY_DEAD)
+        {
+           drawSprite(renderer, &gameConx->game.enemies[i].base.sprite);
+        }
+
     }
     
     //texty

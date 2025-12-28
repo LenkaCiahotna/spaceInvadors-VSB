@@ -12,7 +12,7 @@
 #define MAX_ENEMY_BULLETS 20
 #define BULLET_HEIGHT 20
 #define PLAYER_SHOOT_COOLDOWN 0.5f
-#define ANIMATION_SPEED 0.1f
+#define ANIMATION_SPEED 0.5f
 
 typedef enum {
     STATE_MENU,   

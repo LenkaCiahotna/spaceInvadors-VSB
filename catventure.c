@@ -54,10 +54,10 @@ int main()
             if (event.type == SDL_KEYDOWN) 
             {
                 //zamezeni drzeni klavesy
-                if (event.key.repeat != 0)
+                /*if (event.key.repeat != 0)
                 {
-                    break; 
-                }
+                   continue;
+                }*/
                 //zde M pro mute music?
                 switch (currentState)
                 {
@@ -97,7 +97,9 @@ int main()
             // potrebuji plynuly pohyb
             updatePlayer(&gameContext.game.player, deltaTime);
             handle_collisions_enemies(&gameContext.game);
+            updateEnemies(gameContext.game.enemies, deltaTime);
             updateBullets(gameContext.game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
+            updateGame(&gameContext, context.renderer, font);
         }
 
         //nabarvi pozadi

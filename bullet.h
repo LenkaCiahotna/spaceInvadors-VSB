@@ -6,8 +6,7 @@
 #include "entity.h"
 
 typedef struct {
-    Entity base;
-    int speed;       
+    Entity base;     
     bool active;  
 } Bullet;
 

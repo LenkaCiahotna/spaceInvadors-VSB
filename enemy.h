@@ -12,3 +12,4 @@ typedef struct
 }Enemy;
 
 Enemy enemyInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Point* source, int score,int speed);
+void updateEnemies(Enemy* enemies, float deltaTime);

@@ -22,6 +22,7 @@ typedef struct
 {
     Game game;
     Sprite items[3];
+    int lastRenderedScore;
     int itemCount;
     Sprite lifeIcons[3];
 }GameContext;
@@ -30,6 +31,7 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet);
 GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font);
 void playerShoot(Game *game);
 void handle_collisions_enemies(Game* game);
+void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font);
 
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
 

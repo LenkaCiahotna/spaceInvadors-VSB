@@ -10,7 +10,7 @@ Bullet bulletInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Rect source)
 
     bullet.base.sprite = spriteInit(renderer, sheet, NULL, NULL, &source);
 
-    bullet.speed = 300;
+    bullet.base.speed = 300;
     bullet.active = false;
 
     return bullet;
@@ -18,19 +18,23 @@ Bullet bulletInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Rect source)
 
 void updateBullets(Bullet *bullets, int count, double deltaTime)
 {
-    for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
+    
+    for (int i = 0; i < count; i++)
     {
         if (bullets[i].active)
         {
-            bullets[i].base.posYf -= bullets[i].speed * deltaTime;
-
+            bullets[i].base.posYf -= bullets[i].base.speed * deltaTime;
+            
             bullets[i].base.sprite.destination.y = (int)bullets[i].base.posYf;
-
+            printf("%f : %d\n", bullets[i].base.posYf, bullets[i].base.sprite.destination.y);
             // kontrola vyleteni z obrazovky
-            if (bullets[i].base.posYf< -BULLET_HEIGHT || bullets[i].base.posYf > WINDOW_HEIGHT + BULLET_HEIGHT) 
+            if (bullets[i].base.posYf< - BULLET_HEIGHT || bullets[i].base.posYf > WINDOW_HEIGHT + BULLET_HEIGHT) 
             {
                 bullets[i].active = false; 
             }
+                  
         }
+            
     }
+  
 }
