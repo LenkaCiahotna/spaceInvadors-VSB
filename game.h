@@ -29,5 +29,7 @@ typedef struct
 Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet);
 GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font);
 void playerShoot(Game *game);
+void handle_collisions_enemies(Game* game);
+
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
 

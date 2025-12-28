@@ -53,6 +53,11 @@ int main()
             }
             if (event.type == SDL_KEYDOWN) 
             {
+                //zamezeni drzeni klavesy
+                if (event.key.repeat != 0)
+                {
+                    break; 
+                }
                 //zde M pro mute music?
                 switch (currentState)
                 {
@@ -91,6 +96,7 @@ int main()
         {
             // potrebuji plynuly pohyb
             updatePlayer(&gameContext.game.player, deltaTime);
+            handle_collisions_enemies(&gameContext.game);
             updateBullets(gameContext.game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
         }
 
@@ -108,7 +114,6 @@ int main()
                guideRender(context.renderer, &guideContext);
                 break;
             case STATE_GAME:
-                //POKKUS
                 renderGame(context.renderer, &gameContext);
                 break;
             case STATE_QUIT:

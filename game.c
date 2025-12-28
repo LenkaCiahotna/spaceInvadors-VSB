@@ -120,13 +120,40 @@ void playerShoot(Game *game)
             game->playerBullets[i].base.sprite.destination.x = (int)game->playerBullets[i].base.posXf;
             game->playerBullets[i].base.sprite.destination.y = (int)game->playerBullets[i].base.posYf;
             game->player.shootCooldown =  PLAYER_SHOOT_COOLDOWN;
-            
+
             //strela nalezena, vyskocime z cyklu
             break; 
         }
     }
     printf("VYSTReEEEEL\n");
 }
+
+void handle_collisions_enemies(Game* game) 
+{
+    for (int i = 0; i < MAX_PLAYER_BULLETS; i++) 
+    {
+        if (game->playerBullets[i].active)
+        {
+            for (int y = 0; y < ENEMY_COUNT; y++)
+            {
+                if (game->enemies[y].base.state != ENTITY_DEAD)
+                {
+                    if (SDL_HasIntersection(&game->playerBullets[i].base.sprite.destination, &game->enemies[y].base.sprite.destination)) 
+                    {
+                        game->playerBullets[i].active = false;
+                        game->enemies[y].base.state = ENTITY_EXPLODING;
+
+                        printf("BUM!\n");
+                        break; 
+                    }
+                }
+            }
+                
+        }
+
+    }
+}
+
 
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
 {
@@ -136,7 +163,7 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
     //hrac vystrely
     for (int i = 0; i < MAX_PLAYER_BULLETS; i++)
     {
-       if (&gameConx->game.playerBullets[i].active)
+       if (gameConx->game.playerBullets[i].active)
        {
             drawSprite(renderer, &gameConx->game.playerBullets[i].base.sprite);
        }

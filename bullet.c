@@ -10,7 +10,7 @@ Bullet bulletInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Rect source)
 
     bullet.base.sprite = spriteInit(renderer, sheet, NULL, NULL, &source);
 
-    bullet.speed = 100;
+    bullet.speed = 300;
     bullet.active = false;
 
     return bullet;
