@@ -11,6 +11,7 @@ typedef struct
    int lives;
    float shootCooldown;
    float animTimer;
+   int speed;
 }Player;
 
 Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet);

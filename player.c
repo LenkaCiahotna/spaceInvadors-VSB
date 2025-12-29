@@ -21,7 +21,7 @@ Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet)
     player.base.sprite.destination.y = WINDOW_HEIGHT - 100;
     player.base.posXf =  player.base.sprite.destination.x;
     player.base.posYf =  player.base.sprite.destination.y;
-    player.base.speed = 200;
+    player.speed = 200;
     player.lives = 3;
     player.base.state = ENTITY_ANIM1;
     player.shootCooldown = 0.0f;
@@ -36,14 +36,14 @@ void updatePlayer(Player* player, double deltaTime)
     // doleva
     if (state[SDL_SCANCODE_LEFT])
     {
-        printf("DOLEVAAAA\n : %f", player->base.speed * deltaTime);
-        player->base.posXf -= player->base.speed * deltaTime;
+        printf("DOLEVAAAA\n : %f", player->speed * deltaTime);
+        player->base.posXf -= player->speed * deltaTime;
     }
     // doprava
     if (state[SDL_SCANCODE_RIGHT]) 
     {
-        printf("DOPRAVAAAAA\n : %f", player->base.speed * deltaTime);
-        player->base.posXf += player->base.speed * deltaTime;
+        printf("DOPRAVAAAAA\n : %f", player->speed * deltaTime);
+        player->base.posXf += player->speed * deltaTime;
     }
 
     //kontrola konce obrazovky

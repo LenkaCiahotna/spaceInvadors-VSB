@@ -19,44 +19,15 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet)
     {
         game.playerBullets[i] = bulletInit(renderer, sheet, Bulletrect);
     }   
-    game.enemyDirection = 1; // = zacinaji se hybat doprava
+   
     game.isRunning = true;
-
-    for (int i = 0; i < ENEMY_COUNT; i++)
-    {
-        //mrizka 11 sloupcu 5 rad
-        int col = i % ENEMY_COLS;
-        int row = i / ENEMY_COLS;
-        SDL_Point currentEnemySource = {0, 0}; 
-
-        if (row == 0)
-        {
-            currentEnemySource.x = 0; 
-        }
-        else if (row == 1 || row == 2)
-        {
-            currentEnemySource.x = 2 * ENTITY_SIZE;
-        }
-        else
-        {
-            currentEnemySource.x = 4 * ENTITY_SIZE; 
-        }
-        game.enemies[i] = enemyInit(renderer, sheet, &currentEnemySource);
-
-        game.enemies[i].base.sprite.destination.x = 20 + (col * (ENTITY_SIZE + 10));
-        game.enemies[i].base.sprite.destination.y = 50 + (row * ENTITY_SIZE);
-        game.enemies[i].base.posXf = game.enemies[i].base.sprite.destination.x;
-        game.enemies[i].base.posYf = game.enemies[i].base.sprite.destination.y;
-        game.enemies[i].base.speed = 15;
-        game.enemies[i].score = (5 - row) * 10; //od 50 do 10
-    }
-    game.enemyAnimTimer = MAX_ANIMATION_DELAY;
-    game.enemyAnimInterval = MAX_ANIMATION_DELAY;
-
+    game.wave = 1;
+    enemyHordeInit(renderer, sheet, &game.enemyHorde, game.wave);
     return game;
 }
 
-GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font)
+
+GameContext gameContextInit(SDL_Renderer* renderer, SDL_Texture* sheet, TTF_Font* font)
 {
     GameContext gameContext;
     memset(&gameContext, 0, sizeof(GameContext));
@@ -141,13 +112,14 @@ void handle_collisions_enemies(Game* game)
         {
             for (int y = 0; y < ENEMY_COUNT; y++)
             {
-                if (game->enemies[y].base.state != ENTITY_DEAD)
+                if (game->enemyHorde.enemies[y].base.state != ENTITY_DEAD)
                 {
-                    if (SDL_HasIntersection(&game->playerBullets[i].base.sprite.destination, &game->enemies[y].base.sprite.destination)) 
+                    if (SDL_HasIntersection(&game->playerBullets[i].base.sprite.destination, &game->enemyHorde.enemies[y].base.sprite.destination)) 
                     {
                         game->playerBullets[i].active = false;
-                        game->enemies[y].base.state = ENTITY_EXPLODING;
-                        game->score +=  game->enemies[y].score;
+                        game->enemyHorde.enemies[y].base.state = ENTITY_EXPLODING;
+                        game->score +=  game->enemyHorde.enemies[y].score;
+                        game->enemyHorde.aliveEnemies--;
                         printf("BUM!\n");
                         break; 
                     }
@@ -159,9 +131,16 @@ void handle_collisions_enemies(Game* game)
     }
 }
 
-void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font)
+void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, float deltaTime, SDL_Texture* sheet )
 {
-   if (context->game.score != context->lastRenderedScore)
+   
+    updatePlayer(&context->game.player, deltaTime);
+    handle_collisions_enemies(&context->game);
+    updateEnemies(&context->game.enemyHorde, deltaTime);
+    updateBullets(context->game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
+   
+
+    if (context->game.score != context->lastRenderedScore)
     {
         SDL_DestroyTexture(context->items[1].texture);
         char scoreText[10]; 
@@ -170,6 +149,17 @@ void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font)
         context->items[1].destination.x = 10 + context->items[0].destination.w + 10;
         context->items[1].destination.y = 10 ;
     }
+
+    if (context->game.enemyHorde.aliveEnemies == 0)
+    {
+        context->game.wave++;
+        resetBullets(context->game.playerBullets, MAX_PLAYER_BULLETS);
+        enemyHordeInit(renderer, sheet, &context->game.enemyHorde, context->game.wave);
+    }
+   
+    
+
+
 }
 
 
@@ -191,9 +181,9 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
     //enemies
     for (int i = 0; i < ENEMY_COUNT; i++)
     {
-        if (gameConx->game.enemies[i].base.state != ENTITY_DEAD)
+        if (gameConx->game.enemyHorde.enemies[i].base.state != ENTITY_DEAD)
         {
-           drawSprite(renderer, &gameConx->game.enemies[i].base.sprite);
+           drawSprite(renderer, &gameConx->game.enemyHorde.enemies[i].base.sprite);
         }
 
     }

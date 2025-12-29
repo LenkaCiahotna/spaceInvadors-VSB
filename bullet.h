@@ -6,9 +6,11 @@
 #include "entity.h"
 
 typedef struct {
-    Entity base;     
+    Entity base;   
+    int speed;  
     bool active;  
 } Bullet;
 
 Bullet bulletInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Rect source);
-void updateBullets(Bullet *bullets, int count, double deltaTime);
+void updateBullets(Bullet* bullets, int count, double deltaTime);
+void resetBullets(Bullet* bullets, int count);

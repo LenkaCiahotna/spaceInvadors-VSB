@@ -11,7 +11,4 @@ typedef struct
     float posXf; // skutecna pozice (des. cislo)
     float posYf;
     EntityState state;
-    float animTimer;
-    float animInterval;
-    int speed;
 }Entity;

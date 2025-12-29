@@ -10,23 +10,23 @@ Bullet bulletInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Rect source)
 
     bullet.base.sprite = spriteInit(renderer, sheet, NULL, NULL, &source);
 
-    bullet.base.speed = 300;
+    bullet.speed = 300;
     bullet.active = false;
 
     return bullet;
 }
 
-void updateBullets(Bullet *bullets, int count, double deltaTime)
+void updateBullets(Bullet* bullets, int count, double deltaTime)
 {
     
     for (int i = 0; i < count; i++)
     {
         if (bullets[i].active)
         {
-            bullets[i].base.posYf -= bullets[i].base.speed * deltaTime;
+            bullets[i].base.posYf -= bullets[i].speed * deltaTime;
             
             bullets[i].base.sprite.destination.y = (int)bullets[i].base.posYf;
-            
+
             // kontrola vyleteni z obrazovky
             if (bullets[i].base.posYf< - BULLET_HEIGHT || bullets[i].base.posYf > WINDOW_HEIGHT + BULLET_HEIGHT) 
             {
@@ -37,4 +37,12 @@ void updateBullets(Bullet *bullets, int count, double deltaTime)
             
     }
   
+}
+
+void resetBullets(Bullet* bullets, int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+       bullets[i].active = false;
+    }
 }

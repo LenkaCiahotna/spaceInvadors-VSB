@@ -11,11 +11,9 @@ typedef struct
 {
     Player player;
     Bullet playerBullets[MAX_PLAYER_BULLETS];
-    Enemy enemies[ENEMY_COUNT];
+    EnemyHorde enemyHorde;
+    int wave;
     Bullet enemyBullets[MAX_PLAYER_BULLETS];
-    int enemyDirection; // 1 = doprava, -1 = doleva
-    float enemyAnimTimer;
-    float enemyAnimInterval;
     bool isRunning;
     int score;
 }Game;
@@ -33,7 +31,7 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet);
 GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font);
 void playerShoot(Game *game);
 void handle_collisions_enemies(Game* game);
-void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font);
+void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, float deltaTime, SDL_Texture* sheet );
 
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
 
