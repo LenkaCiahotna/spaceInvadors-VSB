@@ -41,13 +41,17 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet)
         {
             currentEnemySource.x = 4 * ENTITY_SIZE; 
         }
-        game.enemies[i] = enemyInit(renderer, sheet, &currentEnemySource, 10, 10);
+        game.enemies[i] = enemyInit(renderer, sheet, &currentEnemySource);
 
         game.enemies[i].base.sprite.destination.x = 20 + (col * (ENTITY_SIZE + 10));
         game.enemies[i].base.sprite.destination.y = 50 + (row * ENTITY_SIZE);
-        game.enemies[i].base.speed = 10;
+        game.enemies[i].base.posXf = game.enemies[i].base.sprite.destination.x;
+        game.enemies[i].base.posYf = game.enemies[i].base.sprite.destination.y;
+        game.enemies[i].base.speed = 15;
         game.enemies[i].score = (5 - row) * 10; //od 50 do 10
     }
+    game.enemyAnimTimer = MAX_ANIMATION_DELAY;
+    game.enemyAnimInterval = MAX_ANIMATION_DELAY;
 
     return game;
 }
@@ -144,7 +148,6 @@ void handle_collisions_enemies(Game* game)
                         game->playerBullets[i].active = false;
                         game->enemies[y].base.state = ENTITY_EXPLODING;
                         game->score +=  game->enemies[y].score;
-
                         printf("BUM!\n");
                         break; 
                     }

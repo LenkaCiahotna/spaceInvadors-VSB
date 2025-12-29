@@ -25,6 +25,7 @@ Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet)
     player.lives = 3;
     player.base.state = ENTITY_ANIM1;
     player.shootCooldown = 0.0f;
+    player.animTimer = MAX_ANIMATION_DELAY;
     return player;
 }
 

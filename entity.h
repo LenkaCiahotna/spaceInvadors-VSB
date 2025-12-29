@@ -12,5 +12,6 @@ typedef struct
     float posYf;
     EntityState state;
     float animTimer;
+    float animInterval;
     int speed;
 }Entity;

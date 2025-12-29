@@ -97,7 +97,7 @@ int main()
             // potrebuji plynuly pohyb
             updatePlayer(&gameContext.game.player, deltaTime);
             handle_collisions_enemies(&gameContext.game);
-            updateEnemies(gameContext.game.enemies, deltaTime);
+            updateEnemies(gameContext.game.enemies, &gameContext.game.enemyDirection, deltaTime);
             updateBullets(gameContext.game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
             updateGame(&gameContext, context.renderer, font);
         }

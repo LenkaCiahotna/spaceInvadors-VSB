@@ -14,6 +14,8 @@ typedef struct
     Enemy enemies[ENEMY_COUNT];
     Bullet enemyBullets[MAX_PLAYER_BULLETS];
     int enemyDirection; // 1 = doprava, -1 = doleva
+    float enemyAnimTimer;
+    float enemyAnimInterval;
     bool isRunning;
     int score;
 }Game;

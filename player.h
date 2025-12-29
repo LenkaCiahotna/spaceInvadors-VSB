@@ -10,6 +10,7 @@ typedef struct
    Entity base;
    int lives;
    float shootCooldown;
+   float animTimer;
 }Player;
 
 Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet);

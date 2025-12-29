@@ -26,7 +26,7 @@ void updateBullets(Bullet *bullets, int count, double deltaTime)
             bullets[i].base.posYf -= bullets[i].base.speed * deltaTime;
             
             bullets[i].base.sprite.destination.y = (int)bullets[i].base.posYf;
-            printf("%f : %d\n", bullets[i].base.posYf, bullets[i].base.sprite.destination.y);
+            
             // kontrola vyleteni z obrazovky
             if (bullets[i].base.posYf< - BULLET_HEIGHT || bullets[i].base.posYf > WINDOW_HEIGHT + BULLET_HEIGHT) 
             {
