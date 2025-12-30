@@ -82,7 +82,7 @@ int main()
                         }
                         if (event.key.keysym.sym == SDLK_SPACE)
                         {
-                            playerShoot(&gameContext.game);
+                            playerShoot(&gameContext.game.player, gameContext.game.playerBullets);
                         }
                         break;
                     default:
@@ -96,6 +96,10 @@ int main()
         {
             // potrebuji plynuly pohyb
             updateGame(&gameContext, context.renderer, font, deltaTime, spriteSheet);
+            if (gameContext.game.player.lives <= 0)
+            {
+                currentState = STATE_GAMEOVER; 
+            }
         }
 
         //nabarvi pozadi
@@ -125,9 +129,12 @@ int main()
         SDL_RenderPresent(context.renderer);
         last = now;
     }
+
     //uklid
     menuCleanup(&menuContext);
     guideCleanup(&guideContext);
+    gameContextCleanup(&gameContext);
+    SDL_DestroyTexture(spriteSheet);
     TTF_CloseFont(font);
     sdl_context_free(&context);
     return 0;

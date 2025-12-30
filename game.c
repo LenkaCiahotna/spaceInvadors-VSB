@@ -7,8 +7,9 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet)
     Game game;
     memset(&game, 0, sizeof(Game));
 
+    game.isRunning = true;
     game.player =  playerInit(renderer, sheet);
-    SDL_Rect Bulletrect = {
+    SDL_Rect playerBulletrect = {
         .x = 13,
         .y = 2 * ENTITY_SIZE,
         .w = 5,
@@ -17,12 +18,21 @@ Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet)
 
     for (int i = 0; i < MAX_PLAYER_BULLETS; i++) 
     {
-        game.playerBullets[i] = bulletInit(renderer, sheet, Bulletrect);
+        game.playerBullets[i] = bulletInit(renderer, sheet, playerBulletrect, -1);
     }   
-   
-    game.isRunning = true;
+
     game.wave = 1;
     enemyHordeInit(renderer, sheet, &game.enemyHorde, game.wave);
+       SDL_Rect enemyBulletrect = {
+        .x = 0,
+        .y = 2 * ENTITY_SIZE,
+        .w = 13,
+        .h = 20
+    };
+    for (int i = 0; i < MAX_ENEMY_BULLETS; i++) 
+    {
+        game.enemyBullets[i] = bulletInit(renderer, sheet, enemyBulletrect, 1);
+    } 
     return game;
 }
 
@@ -34,7 +44,7 @@ GameContext gameContextInit(SDL_Renderer* renderer, SDL_Texture* sheet, TTF_Font
 
     gameContext.game = gameInit(renderer, sheet);
 
-    char* labels[3] = {"Score", "0000", "Lives"};
+    char* labels[3] = {"Score", "00000", "Lives"};
     gameContext.itemCount = 3;
 
     for (int i = 0; i < gameContext.itemCount; i++) 
@@ -74,35 +84,7 @@ GameContext gameContextInit(SDL_Renderer* renderer, SDL_Texture* sheet, TTF_Font
     return gameContext;
 }
 
-void playerShoot(Game *game)
-{
-    if (game->player.shootCooldown > 0) 
-    {
-        return; 
-    }
-    float playerCenter = game->player.base.posXf + (game->player.base.sprite.destination.w / 2.0f);
-    float bulletHalf = game->playerBullets[0].base.sprite.destination.w / 2.0f;
-            
-    for (int i = 0; i < MAX_PLAYER_BULLETS; i++)
-    {
-        if (!game->playerBullets[i].active)
-        {
-            game->playerBullets[i].active = true;
-            // centrovani strely na stred lodi
-            game->playerBullets[i].base.posXf = playerCenter - bulletHalf;
-            
-            game->playerBullets[i].base.posYf = game->player.base.posYf;
 
-            game->playerBullets[i].base.sprite.destination.x = (int)game->playerBullets[i].base.posXf;
-            game->playerBullets[i].base.sprite.destination.y = (int)game->playerBullets[i].base.posYf;
-            game->player.shootCooldown =  PLAYER_SHOOT_COOLDOWN;
-
-            //strela nalezena, vyskocime z cyklu
-            break; 
-        }
-    }
-    printf("VYSTReEEEEL\n");
-}
 
 void handle_collisions_enemies(Game* game) 
 {
@@ -127,37 +109,67 @@ void handle_collisions_enemies(Game* game)
             }
                 
         }
+    }
+}
 
+void handle_collisions_player(Game* game) 
+{
+    for (int i = 0; i < MAX_ENEMY_BULLETS; i++) 
+    {
+        if (game->enemyBullets[i].active)
+        {
+            if (SDL_HasIntersection(&game->enemyBullets[i].base.sprite.destination, &game->player.base.sprite.destination)) 
+            {
+                game->enemyBullets[i].active = false;
+                game->player.base.state = ENTITY_EXPLODING;
+                game->player.lives--;
+                printf("AU!\n");
+                break; 
+                    
+            }
+        }      
     }
 }
 
 void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, float deltaTime, SDL_Texture* sheet )
 {
+    bool invasionSuccess = false;
    
-    updatePlayer(&context->game.player, deltaTime);
+ 
+   
     handle_collisions_enemies(&context->game);
-    updateEnemies(&context->game.enemyHorde, deltaTime);
-    updateBullets(context->game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
-   
-
-    if (context->game.score != context->lastRenderedScore)
+    handle_collisions_player(&context->game);
+    updatePlayer(&context->game.player, deltaTime);
+    if (context->game.player.base.state != ENTITY_EXPLODING)
     {
-        SDL_DestroyTexture(context->items[1].texture);
-        char scoreText[10]; 
-        sprintf(scoreText, "%04d", context->game.score);
-        context->items[1] = spriteInit(renderer,NULL, scoreText, font, NULL);
-        context->items[1].destination.x = 10 + context->items[0].destination.w + 10;
-        context->items[1].destination.y = 10 ;
-    }
+        invasionSuccess = updateEnemies(&context->game.enemyHorde, deltaTime);
+        if (invasionSuccess ||  context->game.player.lives == 0)
+        {
+            printf("GAME OVER - Invasion Successful\n");
+            context->game.player.lives = 0; 
+        }
+        enemyShoot(&context->game.enemyHorde, context->game.enemyBullets, deltaTime);
+        updateBullets(context->game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
+        updateBullets(context->game.enemyBullets, MAX_ENEMY_BULLETS, deltaTime);
 
-    if (context->game.enemyHorde.aliveEnemies == 0)
-    {
-        context->game.wave++;
-        resetBullets(context->game.playerBullets, MAX_PLAYER_BULLETS);
-        enemyHordeInit(renderer, sheet, &context->game.enemyHorde, context->game.wave);
-    }
+        if (context->game.score != context->lastRenderedScore)
+        {
+            SDL_DestroyTexture(context->items[1].texture);
+            char scoreText[10]; 
+            sprintf(scoreText, "%05d", context->game.score);
+            context->items[1] = spriteInit(renderer,NULL, scoreText, font, NULL);
+            context->items[1].destination.x = 10 + context->items[0].destination.w + 10;
+            context->items[1].destination.y = 10 ;
+        }
+
+        if (context->game.enemyHorde.aliveEnemies == 0)
+        {
+            context->game.wave++;
+            resetBullets(context->game.playerBullets, MAX_PLAYER_BULLETS);
+            enemyHordeInit(renderer, sheet, &context->game.enemyHorde, context->game.wave);
+        }
+   }
    
-    
 
 
 }
@@ -187,6 +199,16 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
         }
 
     }
+
+    //enemies vystrely
+    for (int i = 0; i < MAX_ENEMY_BULLETS; i++)
+    {
+       if (gameConx->game.enemyBullets[i].active)
+       {
+            drawSprite(renderer, &gameConx->game.enemyBullets[i].base.sprite);
+       }
+       
+    }
     
     //texty
     for (int i = 0; i < gameConx->itemCount; i++)
@@ -198,5 +220,17 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
     for (int i = 0; i < gameConx->game.player.lives; i++)
     {
          drawSprite(renderer, &gameConx->lifeIcons[i]);
+    }
+}
+
+void gameContextCleanup(GameContext* context)
+{
+    for (int i = 0; i < context->itemCount; i++) 
+    {
+        if (context->items[i].texture != NULL) 
+        {
+            SDL_DestroyTexture(context->items[i].texture);
+            context->items[i].texture = NULL; 
+        }
     }
 }

@@ -13,7 +13,7 @@ typedef struct
     Bullet playerBullets[MAX_PLAYER_BULLETS];
     EnemyHorde enemyHorde;
     int wave;
-    Bullet enemyBullets[MAX_PLAYER_BULLETS];
+    Bullet enemyBullets[MAX_ENEMY_BULLETS];
     bool isRunning;
     int score;
 }Game;
@@ -29,9 +29,9 @@ typedef struct
 
 Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet);
 GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font);
-void playerShoot(Game *game);
 void handle_collisions_enemies(Game* game);
 void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, float deltaTime, SDL_Texture* sheet );
+void gameContextCleanup(GameContext* context);
 
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
 

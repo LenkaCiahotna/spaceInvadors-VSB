@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "enemy.h"
 
+
 Enemy enemyInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Point* source)
 {
     Enemy enemy;
@@ -25,14 +26,22 @@ Enemy enemyInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Point* source)
 void enemyHordeInit(SDL_Renderer* renderer, SDL_Texture* sheet, EnemyHorde* enemyHorde, int wave)
 {
     enemyHorde->enemyDirection = 1; // = zacinaji se hybat doprava
-    float speedBonus = (float)(wave - 1) * 0.1f; 
-    enemyHorde->enemyAnimInterval = MAX_ANIMATION_DELAY - speedBonus;
+    enemyHorde->aliveEnemies = ENEMY_COUNT;
+    float waveBonus = (float)(wave - 1) * WAVE_BONUS; 
+    enemyHorde->enemyAnimInterval = MAX_ANIMATION_DELAY - waveBonus;
     if (enemyHorde->enemyAnimInterval < MIN_ANIMATION_DELAY)
     {
         enemyHorde->enemyAnimInterval = MIN_ANIMATION_DELAY; 
     } 
-    
-    enemyHorde->aliveEnemies = ENEMY_COUNT;
+    enemyHorde->shootInterval = MAX_SHOOT_DELAY - waveBonus;
+    if (enemyHorde->shootInterval < MIN_SHOOT_DELAY)
+    {
+        enemyHorde->shootInterval = MIN_SHOOT_DELAY;
+    }
+    enemyHorde->enemyAnimTimer = enemyHorde->enemyAnimInterval;
+   
+    enemyHorde->shootTimer = 0.0f;
+   
 
     float startY = 50.0f + ((wave - 1) * ENEMY_DROP_Y);
     
@@ -68,14 +77,72 @@ void enemyHordeInit(SDL_Renderer* renderer, SDL_Texture* sheet, EnemyHorde* enem
         enemyHorde->enemies[i].base.posYf = enemyHorde->enemies[i].base.sprite.destination.y;
         enemyHorde->enemies[i].score = (5 - row) * 10; //od 50 do 10
     }
-    enemyHorde->enemyAnimTimer = enemyHorde->enemyAnimInterval;
+   
 
 }
 
+void enemyShoot(EnemyHorde* horde, Bullet* bullets, float deltaTime)
+{
+    horde->shootTimer += deltaTime;
+    printf("%f --- %f\n", horde->shootTimer,horde->shootInterval );
+    if (horde->shootTimer >= horde->shootInterval)
+    {
+        horde->shootTimer = 0.0f; 
 
-void updateEnemies(EnemyHorde* horde, float deltaTime) 
+        //hledam vzdy nejspodnejsiho enemy v kazdem sloupci
+        int shooters[ENEMY_COLS]; 
+        int shootersCount = 0;
+
+        for (int col = 0; col < ENEMY_COLS; col++)
+        {
+            // odspodu nahoru
+            for (int row = ENEMY_ROWS - 1; row >= 0; row--)
+            {
+                int index = row * ENEMY_COLS + col;
+
+                if (horde->enemies[index].base.state != ENTITY_DEAD && 
+                    horde->enemies[index].base.state != ENTITY_EXPLODING)
+                {
+                    //nasla jsem nejspodnejsiho -> pridam ho do vyberu
+                    shooters[shootersCount] = index;
+                    shootersCount++;
+                    break; 
+                }
+            }
+        }
+
+        // VYSTRELENI
+        if (shootersCount > 0)
+        {
+            int randomShooterIndex = shooters[rand() % shootersCount];
+            Enemy* shooter = &horde->enemies[randomShooterIndex];
+            printf("STRILI ENEMY %d\n", randomShooterIndex);
+            // najdeme volnou strelu
+            for (int i = 0; i < MAX_PLAYER_BULLETS; i++) 
+            {
+                if (!bullets[i].active)
+                {
+                    printf("nasla se strela\n");
+                    bullets[i].active = true;
+                    
+                    // vycentrovani strely
+                    bullets[i].base.posXf = shooter->base.posXf + (ENTITY_SIZE / 2) - bullets[i].base.sprite.destination.w/2; 
+                    bullets[i].base.posYf = shooter->base.posYf + ENTITY_SIZE; 
+                    
+                    bullets[i].base.sprite.destination.x = (int)bullets[i].base.posXf;
+                    bullets[i].base.sprite.destination.y = (int)bullets[i].base.posYf;
+                    break; 
+                }
+            }
+        }
+    }
+    
+}
+
+bool updateEnemies(EnemyHorde* horde, float deltaTime) 
 {
     bool wallHit = false;
+    bool invaded = false;
     horde->enemyAnimTimer += deltaTime;
 
     //vypocet zrychleni - dle poctu zbyvajcich ememies
@@ -125,6 +192,11 @@ void updateEnemies(EnemyHorde* horde, float deltaTime)
                         wallHit = true;
                     }           
 
+                    if (horde->enemies[i].base.posYf + ENTITY_SIZE >= PLAYER_Y)
+                    {
+                        invaded = true;
+                    }
+
                     // actual update pozice pro vykreslení
                     horde->enemies[i].base.sprite.destination.x = (int)horde->enemies[i].base.posXf;
                     horde->enemies[i].base.sprite.destination.y = (int)horde->enemies[i].base.posYf;
@@ -171,7 +243,7 @@ void updateEnemies(EnemyHorde* horde, float deltaTime)
 
         
     }
-
+        return invaded;
     
        
 }
