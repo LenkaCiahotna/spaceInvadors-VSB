@@ -1,7 +1,5 @@
 #include <SDL2/SDL.h>
 #include "guide.h"
-#include "utils.h"
-#include "sdl.h"
 
 GuideContext guideInit(SDL_Renderer* renderer,  TTF_Font* font)
 {
@@ -19,14 +17,13 @@ GuideContext guideInit(SDL_Renderer* renderer,  TTF_Font* font)
         "Shoot: Spacebar"
     };
     guide.itemsCount = 10;
-    int spacing = 30;
     int fontSize = 20;
-    int totalHeight = ((guide.itemsCount - 1) * spacing) + fontSize;
+    int totalHeight = ((guide.itemsCount - 1) * SPACING) + fontSize;
     int startY = (WINDOW_HEIGHT - totalHeight) / 2;    
 
     makeTextSpriteArray(guide.items, renderer, labels, guide.itemsCount, font, startY, 30);
     guide.backMessage = spriteInit(renderer, NULL, "press space to go back to menu", font, NULL);
-    guide.backMessage.destination.y = WINDOW_HEIGHT - spacing*2;
+    guide.backMessage.destination.y = WINDOW_HEIGHT - SPACING*2;
     guide.backMessage.destination.x = (WINDOW_WIDTH - guide.backMessage.destination.w ) / 2;
     return guide;
 }

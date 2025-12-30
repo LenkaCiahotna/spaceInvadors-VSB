@@ -44,7 +44,7 @@ GameContext gameContextInit(SDL_Renderer* renderer, SDL_Texture* sheet, TTF_Font
 
     gameContext.game = gameInit(renderer, sheet);
 
-    char* labels[3] = {"Score", "00000", "Lives"};
+    char* labels[3] = {"Score", "0000", "Lives"};
     gameContext.itemCount = 3;
 
     for (int i = 0; i < gameContext.itemCount; i++) 
@@ -82,6 +82,29 @@ GameContext gameContextInit(SDL_Renderer* renderer, SDL_Texture* sheet, TTF_Font
     gameContext.lastRenderedScore = -1;
 
     return gameContext;
+}
+
+GameOverContext gameOverInit(SDL_Renderer* renderer, TTF_Font* font, int score)
+{
+    GameOverContext gameOverContext;
+    memset(&gameOverContext, 0, sizeof(GameOverContext));
+    
+    gameOverContext.record.finalScore = score;
+    gameOverContext.record.nameLength = 0;
+    gameOverContext.record.playerName[0] = '\0';
+
+    char scoreText[36];
+    sprintf(scoreText, "Score: %d",  gameOverContext.record.finalScore);
+    
+    char* labels[] = {"GAME OVER", " ", scoreText, "ENTER NAME: ", " ", "PRESS ENTER TO SAVE SCORE"};
+    gameOverContext.itemsCount = 6;
+    makeTextSpriteArray(gameOverContext.items, renderer, labels, gameOverContext.itemsCount, font, 150, SPACING);
+
+    gameOverContext.items[5].destination.y =  WINDOW_HEIGHT - SPACING*2;
+
+    // ZAPNUTI SDL INPUT MODU (pro zadani jmeno)
+    SDL_StartTextInput(); 
+    return gameOverContext;
 }
 
 
@@ -135,8 +158,6 @@ void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, flo
 {
     bool invasionSuccess = false;
    
- 
-   
     handle_collisions_enemies(&context->game);
     handle_collisions_player(&context->game);
     updatePlayer(&context->game.player, deltaTime);
@@ -156,7 +177,7 @@ void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, flo
         {
             SDL_DestroyTexture(context->items[1].texture);
             char scoreText[10]; 
-            sprintf(scoreText, "%05d", context->game.score);
+            sprintf(scoreText, "%04d", context->game.score);
             context->items[1] = spriteInit(renderer,NULL, scoreText, font, NULL);
             context->items[1].destination.x = 10 + context->items[0].destination.w + 10;
             context->items[1].destination.y = 10 ;
@@ -169,9 +190,37 @@ void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, flo
             enemyHordeInit(renderer, sheet, &context->game.enemyHorde, context->game.wave);
         }
    }
-   
+}
 
+void updateNameTexture(GameOverContext* context, SDL_Renderer* renderer, TTF_Font* font)
+{
+    //smazeme starou
+    if (context->items[4].texture != NULL)
+    {
+        SDL_DestroyTexture(context->items[4].texture);
+    }
+    // text s _ na konci
+    char buffer[MAX_NAME_LENGTH + 2];
+    sprintf(buffer, "%s_", context->record.playerName);
 
+    context->items[4] = spriteInit(renderer, NULL, buffer, font, NULL);
+
+    context->items[4].destination.x = WINDOW_WIDTH / 2 - context->items[4].destination.w / 2;
+    context->items[4].destination.y = 150 + 4*SPACING; 
+}
+
+void saveScore(char* name, int score)
+{
+    FILE* file = fopen("leaderboard.csv", "a");
+    
+    if (file == NULL)
+    {
+        printf("CHYBA: Nepodarilo se otevrit soubor pro zapis skore!\n");
+        return;
+    }
+
+    fprintf(file, "%s,%d\n", name, score);
+    fclose(file);
 }
 
 
@@ -223,6 +272,14 @@ void renderGame(SDL_Renderer *renderer,GameContext* gameConx)
     }
 }
 
+void renderGameOver(SDL_Renderer *renderer, GameOverContext* over)
+{
+    for (int i = 0; i < over->itemsCount; i++)
+    {
+       drawSprite(renderer, &over->items[i]);
+    }
+}
+
 void gameContextCleanup(GameContext* context)
 {
     for (int i = 0; i < context->itemCount; i++) 
@@ -234,3 +291,4 @@ void gameContextCleanup(GameContext* context)
         }
     }
 }
+

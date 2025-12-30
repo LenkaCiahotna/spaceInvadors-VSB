@@ -6,6 +6,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "bullet.h"
+#include "leaderboard.h"
 
 typedef struct 
 {
@@ -27,11 +28,22 @@ typedef struct
     Sprite lifeIcons[3];
 }GameContext;
 
+typedef struct 
+{
+    GameRecord record;
+    Sprite items[6];
+    int itemsCount;
+} GameOverContext;
+
 Game gameInit(SDL_Renderer *renderer, SDL_Texture *sheet);
 GameContext gameContextInit(SDL_Renderer *renderer, SDL_Texture *sheet, TTF_Font* font);
 void handle_collisions_enemies(Game* game);
 void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, float deltaTime, SDL_Texture* sheet );
 void gameContextCleanup(GameContext* context);
+GameOverContext gameOverInit(SDL_Renderer* renderer, TTF_Font* font, int score);
+void renderGameOver(SDL_Renderer *renderer, GameOverContext* over);
+void updateNameTexture(GameOverContext* ctx, SDL_Renderer* renderer, TTF_Font* font);
+void saveScore(char* name, int score);
 
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
 

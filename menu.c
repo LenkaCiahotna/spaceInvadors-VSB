@@ -1,7 +1,5 @@
 #include <SDL2/SDL.h>
 #include "menu.h"
-#include "utils.h"
-#include "sdl.h"
 
 MenuContext menuInit(SDL_Renderer* renderer, TTF_Font* font)
 {

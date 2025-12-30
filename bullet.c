@@ -1,6 +1,4 @@
 #include <SDL2/SDL.h>
-#include "menu.h"
-#include "utils.h"
 #include "bullet.h"
 
 Bullet bulletInit(SDL_Renderer* renderer, SDL_Texture* sheet, SDL_Rect source, int direction)
