@@ -72,13 +72,11 @@ void updatePlayer(Player* player, double deltaTime)
         // doleva
         if (state[SDL_SCANCODE_LEFT])
         {
-            printf("DOLEVAAAA\n : %f", player->speed * deltaTime);
             player->base.posXf -= player->speed * deltaTime;
         }
         // doprava
         if (state[SDL_SCANCODE_RIGHT]) 
         {
-            printf("DOPRAVAAAAA\n : %f", player->speed * deltaTime);
             player->base.posXf += player->speed * deltaTime;
         }
 
@@ -112,7 +110,8 @@ void updatePlayer(Player* player, double deltaTime)
         player->animTimer += deltaTime;
         printf("HRAC VYBUCHUJE\n");
 
-        if (player->animTimer >= player->animInterval*2 && player->lives > 0) 
+        if (player->animTimer >= player->animInterval*2
+             && player->lives > 0) 
         {
             player->animTimer = 0.0f;
             player->base.state = ENTITY_ANIM1;

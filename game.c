@@ -199,7 +199,8 @@ void updateNameTexture(GameOverContext* context, SDL_Renderer* renderer, TTF_Fon
     {
         SDL_DestroyTexture(context->items[4].texture);
     }
-    // text s _ na konci
+
+    // text s _ na konci (+ _ a \n)
     char buffer[MAX_NAME_LENGTH + 2];
     sprintf(buffer, "%s_", context->record.playerName);
 

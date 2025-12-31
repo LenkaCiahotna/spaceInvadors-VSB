@@ -84,7 +84,6 @@ void enemyHordeInit(SDL_Renderer* renderer, SDL_Texture* sheet, EnemyHorde* enem
 void enemyShoot(EnemyHorde* horde, Bullet* bullets, float deltaTime)
 {
     horde->shootTimer += deltaTime;
-    printf("%f --- %f\n", horde->shootTimer,horde->shootInterval );
     if (horde->shootTimer >= horde->shootInterval)
     {
         horde->shootTimer = 0.0f; 
@@ -170,6 +169,11 @@ bool updateEnemies(EnemyHorde* horde, float deltaTime)
                 horde->enemies[i].base.state = ENTITY_DEAD;
             }
         }
+
+        if (horde->enemies[i].base.posYf + ENTITY_SIZE >= PLAYER_Y)
+        {
+           invaded = true;
+        }
     }
 
     // pak casovana animace
@@ -190,12 +194,7 @@ bool updateEnemies(EnemyHorde* horde, float deltaTime)
                         ||horde->enemies[i].base.posXf - 10 <= 0)
                     {
                         wallHit = true;
-                    }           
-
-                    if (horde->enemies[i].base.posYf + ENTITY_SIZE >= PLAYER_Y)
-                    {
-                        invaded = true;
-                    }
+                    }  
 
                     // actual update pozice pro vykreslení
                     horde->enemies[i].base.sprite.destination.x = (int)horde->enemies[i].base.posXf;
@@ -212,38 +211,28 @@ bool updateEnemies(EnemyHorde* horde, float deltaTime)
                         horde->enemies[i].base.state = ENTITY_ANIM1;
                         horde->enemies[i].base.sprite.source.x -= horde->enemies[i].base.sprite.source.w;
                     }
-                        
-
                 
-                    /*
-                    // Ošetření vyletění z obrazovky
-                    if (enemy->base.y > WINDOW_HEIGHT) {
-                        enemy->active = false;
-                        enemy->base.state = ENTITY_DEAD;
-                    }*/
-                    }
+                }
                 
 
             }
         
-    }
-
-    if (wallHit)
-    {
-        horde->enemyDirection *= -1;
-        wallHit = false;
-        for (int y = 0; y < ENEMY_COUNT; y++)
-        {
-            horde->enemies[y].base.posXf += ENEMY_STEP_X * horde->enemyDirection;
-            horde->enemies[y].base.posYf += ENEMY_DROP_Y;       
-            horde->enemies[y].base.sprite.destination.x = (int)horde->enemies[y].base.posXf;
-            horde->enemies[y].base.sprite.destination.y = (int)horde->enemies[y].base.posYf;               
         }
-    }
 
-        
+        if (wallHit)
+        {
+            horde->enemyDirection *= -1;
+            wallHit = false;
+            for (int y = 0; y < ENEMY_COUNT; y++)
+            {
+                horde->enemies[y].base.posXf += ENEMY_STEP_X * horde->enemyDirection;
+                horde->enemies[y].base.posYf += ENEMY_DROP_Y;       
+                horde->enemies[y].base.sprite.destination.x = (int)horde->enemies[y].base.posXf;
+                horde->enemies[y].base.sprite.destination.y = (int)horde->enemies[y].base.posYf;               
+            }
+        }
+ 
     }
-        return invaded;
-    
-       
+    return invaded;
+        
 }

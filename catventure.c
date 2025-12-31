@@ -75,7 +75,8 @@ int main()
                     {
                         currentState = STATE_MENU;
                     }
-                    if (event.key.keysym.sym == SDLK_SPACE && gameContext.game.player.base.state != ENTITY_EXPLODING)
+                    if (event.key.keysym.sym == SDLK_SPACE && gameContext.game.player.base.state != ENTITY_EXPLODING
+                        && event.key.repeat == 0)
                     {
                         playerShoot(&gameContext.game.player, gameContext.game.playerBullets);
                     }
@@ -87,14 +88,16 @@ int main()
                 {
                     if (overContext.record.nameLength < MAX_NAME_LENGTH)
                     {
-                        strcat(overContext.record.playerName, event.text.text);
-                        overContext.record.nameLength++;
+                        if (strcmp(event.text.text, ",") != 0)
+                        {
+                            strcat(overContext.record.playerName, event.text.text);
+                            overContext.record.nameLength++;
 
-                        // UPDATE NAME TEXTURE
-                        updateNameTexture(&overContext, context.renderer, font);
+                            // UPDATE NAME TEXTURE
+                            updateNameTexture(&overContext, context.renderer, font);
+                        }
                     }
                 }
-               
                 else if (event.type == SDL_KEYDOWN)
                 {
                      // MAZANI PISMEN
@@ -148,27 +151,27 @@ int main()
         // vykresli dle statu
         switch (currentState)
         {
-        case STATE_MENU:
-            menuRender(context.renderer, &menuContext);
-            break;
-        case STATE_GUIDE:
-            guideRender(context.renderer, &guideContext);
-            break;
-        case STATE_GAME:
-            renderGame(context.renderer, &gameContext);
-            break;
-        case STATE_GAMEOVER:
-            renderGameOver(context.renderer, &overContext);
-            break;
-        case STATE_LEADERBOARD:
-            renderLeaderboard(context.renderer, &leaderBoardContext);
-            break;
-        case STATE_QUIT:
-            running = 0;
-            break;
+            case STATE_MENU:
+                menuRender(context.renderer, &menuContext);
+                break;
+            case STATE_GUIDE:
+                guideRender(context.renderer, &guideContext);
+                break;
+            case STATE_GAME:
+                renderGame(context.renderer, &gameContext);
+                break;
+            case STATE_GAMEOVER:
+                renderGameOver(context.renderer, &overContext);
+                break;
+            case STATE_LEADERBOARD:
+                renderLeaderboard(context.renderer, &leaderBoardContext);
+                break;
+            case STATE_QUIT:
+                running = 0;
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
         SDL_RenderPresent(context.renderer);
