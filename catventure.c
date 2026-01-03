@@ -86,7 +86,7 @@ int main()
                 // PRIDAVANI PISMEN
                 if (event.type == SDL_TEXTINPUT)
                 {
-                    if (overContext.record.nameLength < MAX_NAME_LENGTH)
+                    if (overContext.record.nameLength < MAX_NAME_LENGTH && strlen(event.text.text) == 1)
                     {
                         if (strcmp(event.text.text, ",") != 0)
                         {
