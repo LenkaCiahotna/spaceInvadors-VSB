@@ -115,13 +115,13 @@ void enemyShoot(EnemyHorde* horde, Bullet* bullets, float deltaTime)
         {
             int randomShooterIndex = shooters[rand() % shootersCount];
             Enemy* shooter = &horde->enemies[randomShooterIndex];
-            printf("STRILI ENEMY %d\n", randomShooterIndex);
+           // printf("STRILI ENEMY %d\n", randomShooterIndex);
             // najdeme volnou strelu
             for (int i = 0; i < MAX_PLAYER_BULLETS; i++) 
             {
                 if (!bullets[i].active)
                 {
-                    printf("nasla se strela\n");
+                    //printf("nasla se strela\n");
                     bullets[i].active = true;
                     
                     // vycentrovani strely

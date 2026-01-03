@@ -58,7 +58,7 @@ void playerShoot(Player* player, Bullet* bullets)
                 break; 
             }
         }
-        printf("VYSTReEEEEL\n");
+        //printf("VYSTReEEEEL\n");
     }
     
 }
@@ -108,7 +108,7 @@ void updatePlayer(Player* player, double deltaTime)
         }
         
         player->animTimer += deltaTime;
-        printf("HRAC VYBUCHUJE\n");
+        //printf("HRAC VYBUCHUJE\n");
 
         if (player->animTimer >= player->animInterval*2
              && player->lives > 0) 

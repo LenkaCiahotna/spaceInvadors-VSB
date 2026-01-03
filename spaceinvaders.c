@@ -140,7 +140,7 @@ int main()
             {
                 currentState = STATE_GAMEOVER;
                 overContext = gameOverInit(context.renderer, font, gameContext.game.score);
-                printf("VYTVORILA SE GAME OVER");
+               // printf("VYTVORILA SE GAME OVER");
             }
         }
 

@@ -125,7 +125,7 @@ void handle_collisions_enemies(Game* game)
                         game->enemyHorde.enemies[y].base.state = ENTITY_EXPLODING;
                         game->score +=  game->enemyHorde.enemies[y].score;
                         game->enemyHorde.aliveEnemies--;
-                        printf("BUM!\n");
+                        //printf("BUM!\n");
                         break; 
                     }
                 }
@@ -146,7 +146,7 @@ void handle_collisions_player(Game* game)
                 game->enemyBullets[i].active = false;
                 game->player.base.state = ENTITY_EXPLODING;
                 game->player.lives--;
-                printf("AU!\n");
+                //printf("AU!\n");
                 break; 
                     
             }
