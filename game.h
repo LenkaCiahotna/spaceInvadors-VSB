@@ -44,6 +44,7 @@ GameOverContext gameOverInit(SDL_Renderer* renderer, TTF_Font* font, int score);
 void renderGameOver(SDL_Renderer *renderer, GameOverContext* over);
 void updateNameTexture(GameOverContext* ctx, SDL_Renderer* renderer, TTF_Font* font);
 void saveScore(char* name, int score);
+void gameOverCleanup(GameOverContext* over);
 
 void renderGame(SDL_Renderer *renderer,GameContext* gameConx);
 

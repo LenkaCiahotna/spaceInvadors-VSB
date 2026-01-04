@@ -22,6 +22,9 @@
 #define WAVE_BONUS  0.1f
 #define MAX_NAME_LENGTH 5
 #define SPACING 30
+#define LEAREDBOARD_PLACES 10
+#define PLAYER_SPEED 200
+
 
 typedef enum {
     STATE_MENU,   

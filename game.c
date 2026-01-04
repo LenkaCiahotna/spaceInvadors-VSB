@@ -166,8 +166,9 @@ void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, flo
         invasionSuccess = updateEnemies(&context->game.enemyHorde, deltaTime);
         if (invasionSuccess ||  context->game.player.lives == 0)
         {
-            printf("GAME OVER - Invasion Successful\n");
+            //printf("GAME OVER - Invasion Successful\n");
             context->game.player.lives = 0; 
+            return;
         }
         enemyShoot(&context->game.enemyHorde, context->game.enemyBullets, deltaTime);
         updateBullets(context->game.playerBullets, MAX_PLAYER_BULLETS, deltaTime);
@@ -189,7 +190,7 @@ void updateGame(GameContext* context,SDL_Renderer *renderer, TTF_Font* font, flo
             resetBullets(context->game.playerBullets, MAX_PLAYER_BULLETS);
             enemyHordeInit(renderer, sheet, &context->game.enemyHorde, context->game.wave);
         }
-   }
+    }
 }
 
 void updateNameTexture(GameOverContext* context, SDL_Renderer* renderer, TTF_Font* font)
@@ -293,3 +294,14 @@ void gameContextCleanup(GameContext* context)
     }
 }
 
+void gameOverCleanup(GameOverContext* over)
+{
+    for (int i = 0; i < over->itemsCount; i++)
+    {
+        if (over->items[i].texture != NULL)
+        {
+            SDL_DestroyTexture(over->items[i].texture);
+            over->items[i].texture = NULL; 
+        }
+    }
+}

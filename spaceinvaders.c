@@ -48,86 +48,89 @@ int main()
             }
             switch (currentState)
             {
-            case STATE_MENU:
-                if (event.type == SDL_KEYDOWN)
-                {
-                    GameState nextState = menuHandleInput(&menuContext, event);
-                    if (nextState == STATE_GAME)
+                case STATE_MENU:
+                    if (event.type == SDL_KEYDOWN)
                     {
-                        gameContext = gameContextInit(context.renderer, spriteSheet, font);
-                    }
-                    currentState = nextState;
-                }
-                break;
-            case STATE_GUIDE:
-                if (event.type == SDL_KEYDOWN)
-                {
-                    if (event.key.keysym.sym == SDLK_SPACE)
-                    {
-                        currentState = STATE_MENU;
-                    }
-                }
-                break;
-            case STATE_GAME:
-                if (event.type == SDL_KEYDOWN)
-                {
-                    if (event.key.keysym.sym == SDLK_ESCAPE)
-                    {
-                        currentState = STATE_MENU;
-                    }
-                    if (event.key.keysym.sym == SDLK_SPACE && gameContext.game.player.base.state != ENTITY_EXPLODING
-                        && event.key.repeat == 0)
-                    {
-                        playerShoot(&gameContext.game.player, gameContext.game.playerBullets);
-                    }
-                }
-                break;
-            case STATE_GAMEOVER:
-                // PRIDAVANI PISMEN
-                if (event.type == SDL_TEXTINPUT)
-                {
-                    if (overContext.record.nameLength < MAX_NAME_LENGTH && strlen(event.text.text) == 1)
-                    {
-                        if (strcmp(event.text.text, ",") != 0)
+                        GameState nextState = menuHandleInput(&menuContext, event);
+                        if (nextState == STATE_GAME)
                         {
-                            strcat(overContext.record.playerName, event.text.text);
-                            overContext.record.nameLength++;
-
-                            // UPDATE NAME TEXTURE
-                            updateNameTexture(&overContext, context.renderer, font);
+                            gameContext = gameContextInit(context.renderer, spriteSheet, font);
+                        }
+                        if (nextState == STATE_LEADERBOARD)
+                        {
+                            leaderBoardContext = leaderboardInit(context.renderer, font);
+                        }
+                        currentState = nextState;
+                    }
+                    break;
+                case STATE_GUIDE:
+                    if (event.type == SDL_KEYDOWN)
+                    {
+                        if (event.key.keysym.sym == SDLK_SPACE)
+                        {
+                            currentState = STATE_MENU;
                         }
                     }
-                }
-                else if (event.type == SDL_KEYDOWN)
-                {
-                     // MAZANI PISMEN
-                    if (event.key.keysym.sym == SDLK_BACKSPACE && overContext.record.nameLength > 0)
+                    break;
+                case STATE_GAME:
+                    if (event.type == SDL_KEYDOWN)
                     {
-                        overContext.record.playerName[overContext.record.nameLength - 1] = '\0';
-                        overContext.record.nameLength--;
-                        updateNameTexture(&overContext, context.renderer, font);
+                        if (event.key.keysym.sym == SDLK_ESCAPE)
+                        {
+                            currentState = STATE_MENU;
+                        }
+                        if (event.key.keysym.sym == SDLK_SPACE && gameContext.game.player.base.state != ENTITY_EXPLODING
+                            && event.key.repeat == 0)
+                        {
+                            playerShoot(&gameContext.game.player, gameContext.game.playerBullets);
+                        }
                     }
-                    // ULOZENI
-                    else if (event.key.keysym.sym == SDLK_RETURN && strlen(overContext.record.playerName) != 0)
+                    break;
+                case STATE_GAMEOVER:
+                    // PRIDAVANI PISMEN
+                    if (event.type == SDL_TEXTINPUT)
                     {
-                        saveScore(overContext.record.playerName, overContext.record.finalScore);
-                        SDL_StopTextInput();
-                        currentState = STATE_MENU;
+                        if (overContext.record.nameLength < MAX_NAME_LENGTH && strlen(event.text.text) == 1)
+                        {
+                            if (strcmp(event.text.text, ",") != 0)
+                            {
+                                strcat(overContext.record.playerName, event.text.text);
+                                overContext.record.nameLength++;
+
+                                // UPDATE NAME TEXTURE
+                                updateNameTexture(&overContext, context.renderer, font);
+                            }
+                        }
                     }
-                }
-                break;
-            case STATE_LEADERBOARD:
-                leaderBoardContext = leaderboardInit(context.renderer, font);
-                if (event.type == SDL_KEYDOWN)
-                {
-                    if (event.key.keysym.sym == SDLK_SPACE)
+                    else if (event.type == SDL_KEYDOWN)
                     {
-                        currentState = STATE_MENU;
+                        // MAZANI PISMEN
+                        if (event.key.keysym.sym == SDLK_BACKSPACE && overContext.record.nameLength > 0)
+                        {
+                            overContext.record.playerName[overContext.record.nameLength - 1] = '\0';
+                            overContext.record.nameLength--;
+                            updateNameTexture(&overContext, context.renderer, font);
+                        }
+                        // ULOZENI
+                        else if (event.key.keysym.sym == SDLK_RETURN && strlen(overContext.record.playerName) != 0)
+                        {
+                            saveScore(overContext.record.playerName, overContext.record.finalScore);
+                            SDL_StopTextInput();
+                            currentState = STATE_MENU;
+                        }
                     }
-                }
-                break;
-            default:
-                break;
+                    break;
+                case STATE_LEADERBOARD:
+                    if (event.type == SDL_KEYDOWN)
+                    {
+                        if (event.key.keysym.sym == SDLK_SPACE)
+                        {
+                            currentState = STATE_MENU;
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -183,6 +186,8 @@ int main()
     guideCleanup(&guideContext);
     gameContextCleanup(&gameContext);
     SDL_DestroyTexture(spriteSheet);
+    gameOverCleanup(&overContext);
+    leaderboardCleanup(&leaderBoardContext);
     TTF_CloseFont(font);
     sdl_context_free(&context);
     return 0;

@@ -35,7 +35,7 @@ LeaderboardContext leaderboardInit(SDL_Renderer* renderer, TTF_Font* font)
         // strcspn(radek, znak) -> vrati index na kterem ten znak je
         line[strcspn(line, "\n")] = 0;
 
-        char nameBuf[50];
+        char nameBuf[10];
         int scoreBuf;
 
         // nacteni dat ze radku, cte dokud nenarazi na carku
@@ -43,7 +43,7 @@ LeaderboardContext leaderboardInit(SDL_Renderer* renderer, TTF_Font* font)
         {
             int insertAt = -1; 
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < LEAREDBOARD_PLACES; i++)
             {          
                 //pokud nemame jeste 10 zaznamu tak ho priradime      
                 if (i >= leaderboardContext.count) 
@@ -64,7 +64,7 @@ LeaderboardContext leaderboardInit(SDL_Renderer* renderer, TTF_Font* font)
             if (insertAt != -1)
             {
                 //top 10 list posuneme, aby bylo misto na novy radek
-                for (int j = 9; j > insertAt; j--)
+                for (int j = LEAREDBOARD_PLACES - 1; j > insertAt; j--)
                 {
                     leaderboardContext.records[j] = leaderboardContext.records[j - 1];
                 }
@@ -113,4 +113,28 @@ void renderLeaderboard(SDL_Renderer* renderer, LeaderboardContext* leaderboardCo
     }
 
     drawSprite(renderer, &leaderboardContext->backMessage);
+}
+
+void leaderboardCleanup(LeaderboardContext* leaderboard)
+{
+    if (leaderboard->headline.texture != NULL)
+    {
+        SDL_DestroyTexture(leaderboard->headline.texture);
+        leaderboard->headline.texture = NULL;
+    }
+
+    if (leaderboard->backMessage.texture != NULL)
+    {
+        SDL_DestroyTexture(leaderboard->backMessage.texture);
+        leaderboard->backMessage.texture = NULL;
+    }
+
+    for (int i = 0; i < leaderboard->count; i++)
+    {
+        if (leaderboard->rowSprites[i].texture != NULL)
+        {
+            SDL_DestroyTexture(leaderboard->rowSprites[i].texture);
+            leaderboard->rowSprites[i].texture = NULL;
+        }
+    }
 }

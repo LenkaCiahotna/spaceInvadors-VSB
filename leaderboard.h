@@ -21,3 +21,4 @@ typedef struct{
 
 LeaderboardContext leaderboardInit(SDL_Renderer* renderer, TTF_Font* font);
 void renderLeaderboard(SDL_Renderer* renderer, LeaderboardContext* leaderboardContext);
+void leaderboardCleanup(LeaderboardContext* leaderboard);

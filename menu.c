@@ -32,19 +32,12 @@ void menuRender(SDL_Renderer* renderer, MenuContext* menu)
     menu->arrow.destination.x =  targetRect.x -  menu->arrow.destination.w - padding;
     menu->arrow.destination.y =  targetRect.y + (targetRect.h -  menu->arrow.destination.h) / 2 - 5;
     drawSprite(renderer, &menu->arrow);
-
-    /*
-    Sprite pokus;
-    pokus = spriteInit(renderer, "../assets/sprites/pokus.png", NULL,NULL,NULL);
-    pokus.destination.x =200;
-    pokus.destination.y = 200;
-    drawSprite(renderer, &pokus);
-    */
 }
 
 GameState menuHandleInput(MenuContext* menu, SDL_Event event)
 {
-    switch (event.key.keysym.sym) {
+    switch (event.key.keysym.sym) 
+    {
             case SDLK_UP:
                 menu->selectedItem--;
                 if (menu->selectedItem < 0) menu->selectedItem = menu->itemCount - 1; 

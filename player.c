@@ -22,11 +22,11 @@ Player playerInit(SDL_Renderer* renderer, SDL_Texture* sheet)
     player.base.sprite.destination.y = PLAYER_Y;
     player.base.posXf =  player.base.sprite.destination.x;
     player.base.posYf =  player.base.sprite.destination.y;
-    player.speed = 200;
+    player.speed = PLAYER_SPEED;
     player.lives = 3;
     player.base.state = ENTITY_ANIM1;
     player.shootCooldown = 0.0f;
-    player.animTimer = 0;
+    player.animTimer = 0.0f;
     player.animInterval = MAX_ANIMATION_DELAY;
     return player;
 }
