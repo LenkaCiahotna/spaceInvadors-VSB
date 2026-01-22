@@ -1,82 +1,82 @@
-# 🚀 Space Invaders – C/SDL2 hra
+# 🚀 Space Invaders – C/SDL2 Game
 
-Školní projekt klasické **2D arkádové střílečky inspirované legendární hrou Space Invaders**, vytvořený v jazyce **C** s využitím knihovny **SDL2**.  
-Hráč ovládá vesmírnou loď a snaží se odrazit invazi nepřátelských lodí.
+A school project featuring a classic **2D arcade shooter inspired by the legendary Space Invaders**, developed in **C** using the **SDL2** library.  
+The player controls a spaceship and attempts to fend off an invasion of enemy ships.
 
-## 🎮 Funkce
+## 🎮 Features
 
-- Úvodní menu
-- Tabulku nejlepších skóre
-- Jednoduchý návod pro hru
+- Main menu
+- High score leaderboard
+- Simple in-game tutorial/instructions
 
-## 🕹 Ovládání
+## 🕹 Controls
 
-| Klávesa | Akce |
+| Key | Action |
 |--------|--------|
-| ⬆ / ⬇ | Pohyb v menu |
-| ENTER | Potvrzení volby |
-| ⬅ / ➡ | Pohyb rakety |
-| MEZERNÍK | Vystřelení střely |
-| ESC | Návrat do menu |
+| ⬆ / ⬇ | Menu navigation |
+| ENTER | Confirm selection |
+| ⬅ / ➡ | Move ship |
+| SPACE | Fire projectile |
+| ESC | Return to menu |
 
-Během hry mohou být zobrazeny další pokyny přímo na obrazovce.
+Additional instructions may be displayed directly on the screen during gameplay.
 
-## 🎯 Cíl hry
+## 🎯 Objective
 
-- Zničit všechny nepřátelské lodě
-- Získat co nejvyšší skóre
+- Destroy all enemy ships
+- Achieve the highest possible score
 
-Hra končí, pokud:
-- hráč ztratí všechny životy  
-- nepřátelské lodě dosáhnou spodní části obrazovky  
+The game ends if:
+- The player loses all lives  
+- Enemy ships reach the bottom of the screen  
 
-## 👩🏻‍💻 Použité technologie
+## 👩🏻‍💻 Technologies Used
 
-- **Jazyk:** C
-- **Grafická knihovna:** SDL2
-- **Build systém:** CMake
+- **Language:** C
+- **Graphics Library:** SDL2
+- **Build System:** CMake
 
-## 📸 Ukázky
+## 📸 Screenshots
 <img width="750" alt="image" src="https://github.com/user-attachments/assets/6661e0e2-4db3-4b18-bef5-8470fd31221a" />
 <img width="750" alt="image" src="https://github.com/user-attachments/assets/791ea864-ee3d-4a63-bb0c-53a269589696" />
 <img width="750" alt="image" src="https://github.com/user-attachments/assets/f9d602de-e4de-43df-9143-cb0aee6cf542" />
 
+## ⚙️ Installation and Execution 
 
-## ⚙️ Instalace a spuštění 
+This project requires a Linux environment and installed SDL2 libraries.
 
-Projekt vyžaduje Linuxové prostředí a nainstalované SDL2 knihovny.
-
-### 1️⃣ Naklonování projektu
+### 1️⃣ Cloning the Project
 ```bash
-git clone https://github.com/lenkaciahotna/kino.git 
+git clone https://github.com/LenkaCiahotna/spaceInvadors-VSB.git
 ```
 
-### 2️⃣ Instalace závislostí
+### 2️⃣Installing Dependencies
 
-Pro úspěšný překlad a spuštění hry je nutné mít nainstalované následující knihovny: 
-- GCC (nebo jiný C kompilátor)
-- CMake 
-- SDL2 
-- SDL2_image 
+To successfully compile and run the game, the following libraries must be installed:
+
+- GCC (or another C compiler)
+- CMake
+- SDL2
+- SDL2_image
 - SDL2_ttf
 
-Instalace: 
+Installation: 
 ```bash
 sudo apt-get install cmake libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
  ```
 
-### 3️⃣ Spuštění
+### 3️⃣ Running the Game
 
-Po úspěšném stahnutí souborů musíme program nejprve přeložit. Docílíme toho postupným zadáním těchto příkazů: 
+After downloading the files, you must first compile the program. This is done by entering the following commands in sequence:
 
 - mkdir -p 
 - build cd 
 - build cmake .. 
 - make 
 
-Pokud vše proběhlo bez potíží, můžeme program spustit. Spustitelný soubor se nachází ve složce build. 
+If everything proceeds without issues, you can run the program. The executable file is located in the build folder.
 
-Program spustíme pomocí: 
+Run the program using:
 ```bash
 ./spaceinvaders
 ```
