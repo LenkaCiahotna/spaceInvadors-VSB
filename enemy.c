@@ -170,7 +170,7 @@ bool updateEnemies(EnemyHorde* horde, float deltaTime)
             }
         }
 
-        if (horde->enemies[i].base.posYf + ENTITY_SIZE >= PLAYER_Y)
+        if (horde->enemies[i].base.posYf + ENTITY_SIZE >= PLAYER_Y && horde->enemies[i].base.state != ENTITY_DEAD)
         {
            invaded = true;
         }

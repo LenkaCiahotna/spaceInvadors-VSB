@@ -21,7 +21,7 @@ int main()
     SDL_Texture* spriteSheet = IMG_LoadTexture(context.renderer, "../assets/spritesheet.png");
     if (spriteSheet == NULL)
     {
-        printf("CHYBA: Nepodarilo se nacist font!");
+        printf("CHYBA: Nepodarilo se nacist spritesheet!");
         return 1;
     }
     MenuContext menuContext = menuInit(context.renderer, font);
